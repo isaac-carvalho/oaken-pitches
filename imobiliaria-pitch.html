@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA — Atendente Digital para Imobiliárias</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --paper: #fbf9f5;
+    --ink: #1a1a17;
+    --ink-soft: #4a4a44;
+    --line: #d8d3ca;
+    --accent: #1f4d3a;
+    --accent-soft: #e8efe9;
+    --warn: #b8431f;
+    --gold: #b8893f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 32px;
+    background: var(--paper);
+    min-height: 100vh;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 600; }
+  h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 56px 0 20px;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+  }
+  p { color: var(--ink-soft); margin-bottom: 14px; }
+  p.lead { font-size: 19px; line-height: 1.5; color: var(--ink); max-width: 620px; }
+  .rule { height: 1px; background: var(--line); margin: 40px 0; border: none; }
+  .rule-thick { height: 2px; background: var(--ink); margin: 40px 0; border: none; }
+
+  .pain-list { list-style: none; margin: 24px 0; }
+  .pain-list li {
+    padding: 16px 0 16px 36px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    color: var(--ink);
+    font-size: 16px;
+  }
+  .pain-list li:before {
+    content: "✕";
+    position: absolute; left: 4px; top: 16px;
+    color: var(--warn);
+    font-weight: 700;
+  }
+  .pain-list li strong { color: var(--warn); }
+
+  .modules { margin: 24px 0; }
+  .module {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+  .module-num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .module h3 { margin-bottom: 6px; }
+  .module p { margin: 0; font-size: 15px; }
+
+  .compare {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+    font-size: 15px;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row.head {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .compare-row.head .compare-cost { color: var(--paper); }
+  .compare-cost {
+    text-align: right;
+    font-weight: 600;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+  }
+  .compare-row.total {
+    background: var(--accent-soft);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .compare-row.total .compare-cost { color: var(--accent); font-size: 17px; }
+
+  .price-box {
+    border: 2px solid var(--ink);
+    padding: 36px 32px;
+    margin: 40px 0;
+    text-align: center;
+    background: var(--paper);
+    position: relative;
+  }
+  .price-label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .price-value {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .price-value sup { font-size: 24px; vertical-align: top; margin-right: 4px; font-weight: 500; }
+  .price-period { font-size: 16px; color: var(--ink-soft); margin-top: 8px; }
+  .price-note { font-size: 13px; color: var(--ink-soft); margin-top: 18px; font-style: italic; }
+
+  .guarantee {
+    border-left: 4px solid var(--gold);
+    padding: 20px 24px;
+    background: #faf6ed;
+    margin: 32px 0;
+  }
+  .guarantee h3 { color: var(--gold); margin-bottom: 8px; font-size: 15px; letter-spacing: 0.02em; text-transform: uppercase; }
+  .guarantee p { color: var(--ink); margin: 0; }
+
+  .quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    padding: 24px 0 24px 28px;
+    border-left: 3px solid var(--accent);
+    margin: 32px 0;
+  }
+  .quote-attr {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .steps { counter-reset: step; margin: 24px 0; }
+  .step {
+    counter-increment: step;
+    padding: 14px 0 14px 44px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+  .step:before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 14px;
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .step strong { display: block; margin-bottom: 2px; }
+  .step span { font-size: 14px; color: var(--ink-soft); }
+
+  .cta-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 32px;
+    margin: 48px -32px -48px;
+    text-align: center;
+  }
+  .cta-block h2 { color: var(--paper); margin-top: 0; }
+  .cta-block p { color: #bfbfb8; }
+  .cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 32px;
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    border-radius: 2px;
+  }
+  .contact-line {
+    font-size: 14px;
+    color: #9a9a93;
+    margin-top: 18px;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-mark {
+    text-align: center;
+    padding: 24px 0 0;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .header-mark {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .brand-tag {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .math-box {
+    background: var(--accent-soft);
+    padding: 24px 28px;
+    border-radius: 4px;
+    margin: 28px 0;
+  }
+  .math-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    font-size: 15px;
+    border-bottom: 1px dashed rgba(31, 77, 58, 0.25);
+  }
+  .math-line:last-child { border-bottom: none; padding-top: 14px; font-weight: 700; font-size: 17px; color: var(--accent); }
+  .math-line span:last-child { font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 600px) {
+    .page { padding: 32px 20px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+    .price-value { font-size: 56px; }
+    .compare-row { grid-template-columns: 1fr 100px; padding: 12px 14px; font-size: 14px; }
+    .cta-block { margin: 40px -20px -32px; padding: 32px 20px; }
+  }
+
+  @media print {
+    body { background: white; }
+    .page { border: none; max-width: none; padding: 24px 32px; }
+    .cta-block { margin: 32px 0 0; }
+    h2 { page-break-after: avoid; }
+    .price-box, .compare, .math-box, .guarantee { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-mark">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Proposta · Imobiliárias · 2026</span>
+  </div>
+
+  <span class="badge">Proposta exclusiva</span>
+
+  <h1>O lead respondeu o anúncio às 22h. Seu concorrente respondeu <em>em 2 minutos</em>. Você respondeu no dia seguinte.</h1>
+
+  <p class="lead">Em imóveis, quem responde primeiro fecha. Metade dos compradores acaba com o corretor que respondeu mais rápido — não com o que tinha o melhor imóvel. Cada lead que esfria na sua caixa de entrada é uma comissão que entrou na imobiliária da esquina.</p>
+
+  <hr class="rule-thick">
+
+  <h2>Os gargalos que toda imobiliária tem (e ninguém resolve)</h2>
+
+  <ul class="pain-list">
+    <li><strong>Lead de portal esfria em minutos</strong> — anúncio no OLX, Zap, Imovelweb gera contato a qualquer hora. Quem responde em até 5 min fecha 5× mais. Seu corretor estava no almoço, dirigindo, ou dormindo.</li>
+    <li><strong>Corretor respondendo as mesmas 10 perguntas 50× por dia</strong> — aceita pet? tem vaga? quanto é o condomínio? aceita financiamento? tem FGTS? Tempo que ele deveria estar fechando visita.</li>
+    <li><strong>Visita marcada que vira sábado perdido</strong> — corretor reserva a manhã, vai até o imóvel, e o cliente não aparece. Ninguém confirmou na véspera.</li>
+    <li><strong>Cliente visitou e sumiu</strong> — gostou do imóvel, foi "pensar", e nunca mais ninguém retomou. Era só uma mensagem na hora certa.</li>
+    <li><strong>Banco de leads parado</strong> — centenas de contatos antigos que procuraram e não fecharam. Mudaram de ideia, juntaram entrada, foram aprovados no financiamento — e você nem sabe.</li>
+    <li><strong>Matching manual lead × imóvel</strong> — chega um comprador e o corretor não lembra qual dos 300 imóveis da carteira serve pra ele.</li>
+    <li><strong>Documentação de proposta e locação que trava o negócio</strong> — coletar RG, comprovante de renda, ficha cadastral por WhatsApp, manualmente, um a um.</li>
+  </ul>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA faz pela sua imobiliária</h2>
+
+  <p>Não é um chatbot que responde "olá, em que posso ajudar?". É uma equipe digital com 4 agentes treinados para o mercado imobiliário, trabalhando 24 horas no WhatsApp da sua imobiliária.</p>
+
+  <div class="modules">
+
+    <div class="module">
+      <span class="module-num">01</span>
+      <div>
+        <h3>Agente de Atendimento</h3>
+        <p>Responde todo lead em menos de 30 segundos, qualquer hora. Qualifica na hora: compra ou aluguel, faixa de preço, financiamento aprovado, tem FGTS, bairro desejado, urgência. Entende áudio também — o cliente mandou um áudio de 2min descrevendo o que procura, o agente transcreve e responde com os imóveis certos.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">02</span>
+      <div>
+        <h3>Agente de Vendas</h3>
+        <p>Apresenta imóveis e conduz a negociação usando as 6 armas da persuasão do livro <em>"As Armas da Persuasão"</em> de Cialdini — escassez real ("esse apartamento teve 6 visitas essa semana"), prova social, autoridade do corretor, reciprocidade. Cria urgência verdadeira sem mentir, e leva o lead até a visita.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">03</span>
+      <div>
+        <h3>Agente de Agendamento</h3>
+        <p>Marca visitas cruzando a agenda dos corretores — sem conflito, sem dois corretores no mesmo imóvel. Manda lembrete 24h antes e 1h antes, e <em>confirma presença</em>: "Confirma a visita de amanhã às 15h no apto da Rua das Flores? Responda SIM". Acabou o sábado perdido.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">04</span>
+      <div>
+        <h3>Matching e reativação automática</h3>
+        <p>Cruza o perfil de cada lead com sua carteira e sugere os imóveis certos automaticamente. Cliente visitou e sumiu? Follow-up em 48h. Lead antigo do banco parado? Reaquecimento programado: "Apareceu um T3 no bairro que você procurava no ano passado". Sua base morta vira comissão.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">05</span>
+      <div>
+        <h3>Painel CRM</h3>
+        <p>Você e sua equipe acessam pelo celular ou computador: carteira de imóveis, funil de leads em tempo real, visitas da semana, propostas em andamento, conversas, leads parados há mais de 15 dias e VGV em negociação. O comando da imobiliária num lugar só.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">06</span>
+      <div>
+        <h3>Documentação e follow-up</h3>
+        <p>O agente coleta a documentação de proposta e locação direto no WhatsApp, organizada por cliente. E faz follow-up pós-visita automático: colhe o feedback do cliente e avisa o corretor se o lead está quente ou esfriando.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="rule">
+
+  <h2>Quanto custa hoje resolver isso "do jeito normal"</h2>
+
+  <div class="compare">
+    <div class="compare-row head">
+      <span>Solução tradicional</span>
+      <span class="compare-cost">Custo/mês</span>
+    </div>
+    <div class="compare-row">
+      <span>Secretária/estagiário pra responder portais e WhatsApp</span>
+      <span class="compare-cost">R$ 1.800</span>
+    </div>
+    <div class="compare-row">
+      <span>CRM imobiliário (Jetimob, Vista e similares)</span>
+      <span class="compare-cost">R$ 300</span>
+    </div>
+    <div class="compare-row">
+      <span>Ferramenta de disparo de WhatsApp</span>
+      <span class="compare-cost">R$ 180</span>
+    </div>
+    <div class="compare-row">
+      <span>Anúncios pra repor os leads perdidos</span>
+      <span class="compare-cost">R$ 800</span>
+    </div>
+    <div class="compare-row total">
+      <span>Total mensal</span>
+      <span class="compare-cost">R$ 3.080</span>
+    </div>
+  </div>
+
+  <p>E mesmo gastando isso, você continua perdendo lead fora do horário, esquecendo de retomar o cliente que visitou, e dependendo da memória do corretor pra lembrar qual imóvel serve pra quem.</p>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA cobra</h2>
+
+  <div class="price-box">
+    <div class="price-label">Plano único · Tudo incluído</div>
+    <div class="price-value"><sup>R$</sup>120</div>
+    <div class="price-period">por mês · sem fidelidade · sem taxa de instalação</div>
+    <div class="price-note">Cancela quando quiser. Sem contrato amarrado, sem multa.</div>
+  </div>
+
+  <div class="math-box">
+    <div class="math-line"><span>1 comissão de locação fechada pelo agente</span><span>R$ 1.500</span></div>
+    <div class="math-line"><span>Custo mensal Oaken IA</span><span>R$ 120</span></div>
+    <div class="math-line"><span>Retorno em 1 único contrato de aluguel</span><span>12×</span></div>
+  </div>
+
+  <p>E isso é o piso. <strong>Uma única venda fechada</strong> — uma comissão de 3% sobre um imóvel de R$ 300 mil são R$ 9.000 — paga o sistema por mais de 6 anos. Tudo acima disso é lucro líquido.</p>
+
+  <div class="guarantee">
+    <h3>Garantia de 30 dias</h3>
+    <p>Se em 30 dias a Oaken IA não trouxer pelo menos <strong>3 visitas qualificadas</strong> que sua imobiliária não teria agendado sozinha, devolvo o dinheiro integral. Sem perguntas, sem burocracia.</p>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Como funciona pra começar</h2>
+
+  <div class="steps">
+    <div class="step">
+      <strong>Você assina hoje</strong>
+      <span>R$ 120 pelo primeiro mês. Sem instalação, sem taxa.</span>
+    </div>
+    <div class="step">
+      <strong>Em 48h o agente está rodando no WhatsApp da sua imobiliária</strong>
+      <span>Eu configuro o tom, conecto sua carteira de imóveis, cadastro os corretores e as regras de cada um.</span>
+    </div>
+    <div class="step">
+      <strong>Você recebe o painel no celular</strong>
+      <span>Acompanha tudo em tempo real: leads, visitas, conversas, propostas e funil.</span>
+    </div>
+    <div class="step">
+      <strong>Eu cuido de manter, atualizar e melhorar</strong>
+      <span>Você não mexe em nada técnico. Novo imóvel na carteira, mudança de corretor, ajuste de tom — me manda mensagem, eu ajusto.</span>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Por que R$ 120, e não R$ 1.200?</h2>
+
+  <p>Sinceramente: porque eu estou montando carteira inicial em 2026 e quero imobiliárias como vitrine. Quando eu tiver 30 clientes, esse plano sai do ar e o preço normal sobe pra R$ 490+. Quem entra agora, trava esse valor enquanto estiver ativo.</p>
+
+  <div class="quote">
+    "No mercado imobiliário, o melhor imóvel não ganha. Ganha quem responde primeiro e faz o follow-up que o concorrente esqueceu."
+    <span class="quote-attr">— Isaac · Oaken IA</span>
+  </div>
+
+  <div class="cta-block">
+    <h2>Vamos colocar isso pra rodar essa semana?</h2>
+    <p>Me responde no WhatsApp e em 48h sua imobiliária tem atendimento 24/7, agente de vendas e painel funcionando.</p>
+    <a href="https://wa.me/351913388794?text=Ol%C3%A1%2C%20vi%20a%20proposta%20da%20Oaken%20IA%20para%20a%20minha%20imobili%C3%A1ria%20e%20gostaria%20de%20conversar." class="cta-button">Falar no WhatsApp →</a>
+    <div class="contact-line">Isaac · Oaken IA · +351 913 388 794</div>
+  </div>
+
+  <div class="footer-mark">
+    Proposta válida até 30 de Julho de 2026
+  </div>
+
+</div>
+
+</body>
+</html>
