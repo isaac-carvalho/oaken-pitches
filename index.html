@@ -3,205 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oaken IA — Propostas comerciais</title>
+<title>Oaken IA — Propostas por nicho</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f4f1ec;
-    --paper: #fbf9f5;
-    --ink: #1a1a17;
-    --ink-soft: #4a4a44;
-    --line: #d8d3ca;
-    --accent: #1f4d3a;
-    --accent-soft: #e8efe9;
-    --gold: #b8893f;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-  }
-  .page {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 56px 32px 80px;
-    background: var(--paper);
-    min-height: 100vh;
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-  }
-  .header-mark {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 20px;
-    margin-bottom: 48px;
-  }
-  .brand {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 22px;
-    letter-spacing: -0.01em;
-  }
-  .brand-tag {
-    font-size: 11px;
-    color: var(--ink-soft);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-  .hero {
-    margin-bottom: 56px;
-  }
-  .hero h1 {
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 600;
-    font-size: 48px;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    margin-bottom: 18px;
-    max-width: 700px;
-  }
-  .hero h1 em { font-style: italic; color: var(--accent); }
-  .hero p {
-    font-size: 18px;
-    color: var(--ink-soft);
-    max-width: 620px;
-  }
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--line);
-  }
-  .pitch-list { margin-bottom: 56px; }
-  .pitch-card {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 24px;
-    padding: 28px 0;
-    border-bottom: 1px solid var(--line);
-    align-items: center;
-    text-decoration: none;
-    color: var(--ink);
-    transition: padding-left 0.15s;
-  }
-  .pitch-card:hover {
-    padding-left: 8px;
-  }
-  .pitch-card:hover h3 { color: var(--accent); }
-  .pitch-meta {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .pitch-card h3 {
-    font-family: 'Fraunces', serif;
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    margin-bottom: 6px;
-    line-height: 1.2;
-    transition: color 0.15s;
-  }
-  .pitch-card p {
-    color: var(--ink-soft);
-    font-size: 15px;
-    max-width: 560px;
-  }
-  .pitch-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .pitch-link {
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 14px;
-    border: 1px solid var(--ink);
-    border-radius: 2px;
-    text-decoration: none;
-    color: var(--ink);
-    letter-spacing: 0.02em;
-    transition: background 0.15s, color 0.15s;
-  }
-  .pitch-link:hover { background: var(--ink); color: var(--paper); }
-  .pitch-link.pdf {
-    background: var(--accent);
-    color: var(--paper);
-    border-color: var(--accent);
-  }
-  .pitch-link.pdf:hover { background: #143527; }
-
-  .empty {
-    padding: 32px 0;
-    color: var(--ink-soft);
-    font-style: italic;
-    text-align: center;
-    border: 1px dashed var(--line);
-    border-radius: 4px;
-  }
-
-  .footer {
-    border-top: 1px solid var(--line);
-    padding-top: 28px;
-    margin-top: 48px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
-  .footer a:hover { text-decoration: underline; }
-
-  .contact-box {
-    background: var(--accent-soft);
-    padding: 28px 32px;
-    border-radius: 4px;
-    margin: 32px 0;
-  }
-  .contact-box h2 {
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--accent);
-  }
-  .contact-box p { color: var(--ink); margin-bottom: 14px; font-size: 15px; }
-  .contact-box a {
-    display: inline-block;
-    padding: 10px 20px;
-    background: var(--accent);
-    color: var(--paper);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    border-radius: 2px;
-  }
-
-  @media (max-width: 640px) {
-    .page { padding: 32px 20px 60px; }
-    .hero h1 { font-size: 34px; }
-    .hero p { font-size: 16px; }
-    .pitch-card { grid-template-columns: 1fr; gap: 16px; }
-    .pitch-actions { justify-content: flex-start; }
-  }
+:root{--bg:#f4f1ec;--paper:#fbf9f5;--ink:#1a1a17;--ink-soft:#4a4a44;--line:#d8d3ca;
+--accent:#1f4d3a;--accent-soft:#e8efe9;--gold:#b8893f;--cinza:#7a7a72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased;}
+.page{max-width:880px;margin:0 auto;padding:56px 32px 80px;background:var(--paper);min-height:100vh;
+border-left:1px solid var(--line);border-right:1px solid var(--line);}
+.header-mark{display:flex;justify-content:space-between;align-items:baseline;
+border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:40px;}
+.brand{font-family:'Fraunces',serif;font-weight:600;font-size:22px;letter-spacing:-.01em;}
+.brand-tag{font-size:11px;color:var(--cinza);letter-spacing:.15em;text-transform:uppercase;}
+.hero{margin-bottom:36px;}
+.hero h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:46px;line-height:1.08;
+letter-spacing:-.02em;margin-bottom:16px;max-width:720px;}
+.hero h1 em{font-style:italic;color:var(--accent);}
+.hero p{font-size:18px;color:var(--ink-soft);max-width:640px;}
+.nav-chips{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 8px;padding-bottom:28px;
+border-bottom:1px solid var(--line);}
+.chip{font-size:13px;font-weight:600;text-decoration:none;color:var(--accent);
+border:1px solid var(--accent-soft);background:var(--accent-soft);border-radius:20px;
+padding:7px 14px;transition:all .12s;}
+.chip:hover{background:var(--accent);color:var(--paper);border-color:var(--accent);}
+.count-line{font-size:13px;color:var(--cinza);margin:24px 0 8px;letter-spacing:.02em;}
+.nicho{border:1px solid var(--line);border-radius:10px;background:var(--paper);
+padding:26px 28px;margin:18px 0;scroll-margin-top:20px;
+box-shadow:0 1px 0 rgba(0,0,0,.02),0 6px 18px rgba(0,0,0,.03);}
+.nicho-cat{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+color:var(--accent);margin-bottom:6px;}
+.nicho h2{font-family:'Fraunces',serif;font-weight:600;font-size:28px;letter-spacing:-.015em;
+line-height:1.15;margin-bottom:8px;}
+.nicho p{color:var(--ink-soft);font-size:15px;margin-bottom:20px;max-width:660px;}
+.assets{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+.asset-group{background:var(--paper);padding:14px 16px;}
+.group-label{display:block;font-size:10px;font-weight:700;letter-spacing:.12em;
+text-transform:uppercase;color:var(--cinza);margin-bottom:10px;}
+.asset-links{display:flex;flex-wrap:wrap;gap:8px;}
+.lnk{font-size:13px;font-weight:600;text-decoration:none;border-radius:6px;padding:8px 12px;
+letter-spacing:.01em;transition:all .12s;border:1px solid var(--line);color:var(--ink);background:var(--bg);}
+.lnk:hover{border-color:var(--ink);}
+.lnk.primary{background:var(--accent);color:var(--paper);border-color:var(--accent);}
+.lnk.primary:hover{filter:brightness(1.08);}
+.lnk.muted{color:var(--cinza);}
+.contact-box{background:var(--accent-soft);padding:28px 32px;border-radius:10px;margin:40px 0 0;}
+.contact-box h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:6px;color:var(--accent);}
+.contact-box p{color:var(--ink);margin-bottom:14px;font-size:15px;}
+.contact-box a{display:inline-block;padding:10px 20px;background:var(--accent);color:var(--paper);
+text-decoration:none;font-weight:600;font-size:14px;border-radius:6px;}
+.footer{border-top:1px solid var(--line);padding-top:28px;margin-top:40px;display:flex;
+justify-content:space-between;font-size:13px;color:var(--cinza);}
+.footer a{color:var(--accent);text-decoration:none;font-weight:600;}
+@media(max-width:680px){.page{padding:32px 20px 60px;}.hero h1{font-size:32px;}
+.hero p{font-size:16px;}.assets{grid-template-columns:1fr;}.nicho{padding:20px;}}
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <div class="header-mark">
@@ -211,302 +74,68 @@
 
   <div class="hero">
     <h1>Soluções de IA <em>por nicho</em> — atendimento, vendas e operação no WhatsApp.</h1>
-    <p>Cada proposta abaixo foi escrita para um setor específico, com os gargalos reais daquele tipo de negócio e uma solução completa rodando 24/7.</p>
+    <p>Cada nicho abaixo tem tudo reunido num só lugar: a proposta (online e PDF), a demonstração do painel CRM e o formulário de início para o cliente preencher (online ou Word.)</p>
   </div>
 
-  <div class="section-label">Propostas ativas</div>
+  <nav class="nav-chips">
+    <a class="chip" href="#auto-escola">Auto-Escola</a>
+    <a class="chip" href="#imobiliaria">Imobiliária</a>
+    <a class="chip" href="#salao-barbearia">Salão &amp; Barbearia</a>
+    <a class="chip" href="#condominio">Condomínio</a>
+    <a class="chip" href="#lojas">Lojas &amp; Atacado</a>
+    <a class="chip" href="#clinicas">Clínicas &amp; Consultórios</a>
+  </nav>
 
-  <div class="pitch-list">
+  <div class="count-line">6 nichos · clique no nicho acima para ir direto</div>
 
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Educação · Trânsito</div>
-        <h3>Auto-Escolas</h3>
-        <p>Atendimento 24/7, agente de vendas com Cialdini, agendamento automático, reativação de reprovados e ex-alunos com CNH vencendo. R$ 120/mês.</p>
+    <section class="nicho" id="auto-escola">
+      <div class="nicho-cat">Educação · Trânsito</div>
+      <h2>Auto-Escola</h2>
+      <p>Atendimento 24/7, agente de vendas com Cialdini, agendamento com lembretes e reativação de reprovados e ex-alunos com CNH vencendo.</p>
+      <div class="assets">
+<div class="asset-group"><span class="group-label">Proposta</span><div class="asset-links"><a class="lnk primary" href="auto-escola-pitch.html">Ver online</a><a class="lnk" href="auto-escola-pitch.pdf">Baixar PDF</a></div></div><div class="asset-group"><span class="group-label">Painel CRM (demo)</span><div class="asset-links"><a class="lnk primary" href="painel-auto-escola-demo.html">Abrir demo</a></div></div><div class="asset-group"><span class="group-label">Formulário do cliente</span><div class="asset-links"><a class="lnk primary" href="onboarding/form-auto-escola.html">Online · WhatsApp</a><a class="lnk" href="onboarding/onboarding-auto-escola.docx">Word (.docx)</a></div></div>
       </div>
-      <div class="pitch-actions">
-        <a href="auto-escola-pitch.html" class="pitch-link">Ver online</a>
-        <a href="auto-escola-pitch.pdf" class="pitch-link pdf">Baixar PDF</a>
+    </section>
+    <section class="nicho" id="imobiliaria">
+      <div class="nicho-cat">Imobiliário</div>
+      <h2>Imobiliária</h2>
+      <p>Resposta em segundos a leads de portais, agendamento de visitas com confirmação, matching lead × imóvel e reativação de banco parado.</p>
+      <div class="assets">
+<div class="asset-group"><span class="group-label">Proposta</span><div class="asset-links"><a class="lnk primary" href="imobiliaria-pitch.html">Ver online</a><a class="lnk" href="imobiliaria-pitch.pdf">Baixar PDF</a></div></div><div class="asset-group"><span class="group-label">Painel CRM (demo)</span><div class="asset-links"><a class="lnk primary" href="painel-imobiliaria-demo.html">Abrir demo</a></div></div><div class="asset-group"><span class="group-label">Formulário do cliente</span><div class="asset-links"><a class="lnk primary" href="onboarding/form-imobiliaria.html">Online · WhatsApp</a><a class="lnk" href="onboarding/onboarding-imobiliaria.docx">Word (.docx)</a></div></div>
       </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Demo · Painel CRM</div>
-        <h3>Painel — Auto-Escola</h3>
-        <p>Mockup interativo do CRM que cada auto-escola recebe: dashboard, funil de leads, agenda, conversas WhatsApp e reativação de alunos parados. Light/dark mode.</p>
+    </section>
+    <section class="nicho" id="salao-barbearia">
+      <div class="nicho-cat">Beleza · Barbearia</div>
+      <h2>Salão &amp; Barbearia</h2>
+      <p>Agendamento anti no-show, upsell de combos, reativação por ciclo de retorno e preenchimento de horários ociosos.</p>
+      <div class="assets">
+<div class="asset-group"><span class="group-label">Proposta</span><div class="asset-links"><a class="lnk primary" href="salao-barbearia-pitch.html">Ver online</a><a class="lnk" href="salao-barbearia-pitch.pdf">Baixar PDF</a></div></div><div class="asset-group"><span class="group-label">Painel CRM (demo)</span><div class="asset-links"><a class="lnk primary" href="painel-salao-barbearia-demo.html">Abrir demo</a></div></div><div class="asset-group"><span class="group-label">Formulário do cliente</span><div class="asset-links"><a class="lnk primary" href="onboarding/form-salao-barbearia.html">Online · WhatsApp</a><a class="lnk" href="onboarding/onboarding-salao-barbearia.docx">Word (.docx)</a></div></div>
       </div>
-      <div class="pitch-actions">
-        <a href="painel-auto-escola-demo.html" class="pitch-link pdf">Abrir demo</a>
+    </section>
+    <section class="nicho" id="condominio">
+      <div class="nicho-cat">Condomínios · Prédios</div>
+      <h2>Condomínio</h2>
+      <p>Portaria digital de encomendas com PIN, atendimento 24/7 ao morador, reserva de áreas comuns, controle de visitantes e comunicados.</p>
+      <div class="assets">
+<div class="asset-group"><span class="group-label">Proposta</span><div class="asset-links"><a class="lnk primary" href="condominio-pitch.html">Ver online</a><a class="lnk" href="condominio-pitch.pdf">Baixar PDF</a></div></div><div class="asset-group"><span class="group-label">Painel CRM (demo)</span><div class="asset-links"><a class="lnk primary" href="painel-condominio-demo.html">Abrir demo</a></div></div><div class="asset-group"><span class="group-label">Formulário do cliente</span><div class="asset-links"><a class="lnk primary" href="onboarding/form-condominio.html">Online · WhatsApp</a><a class="lnk" href="onboarding/onboarding-condominio.docx">Word (.docx)</a></div></div>
       </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Imobiliário</div>
-        <h3>Imobiliárias</h3>
-        <p>Resposta em segundos a leads de portais, agente de vendas com Cialdini, agendamento de visitas com confirmação, matching automático lead × imóvel e reativação de banco parado. R$ 120/mês.</p>
+    </section>
+    <section class="nicho" id="lojas">
+      <div class="nicho-cat">Varejo · Atacado</div>
+      <h2>Lojas &amp; Atacado</h2>
+      <p>Preço, tamanho e grade na hora, vendas com upsell e escassez, pedidos com link de pagamento e reativação de revendedores.</p>
+      <div class="assets">
+<div class="asset-group"><span class="group-label">Proposta</span><div class="asset-links"><a class="lnk primary" href="lojas-pitch.html">Ver online</a><a class="lnk" href="lojas-pitch.pdf">Baixar PDF</a></div></div><div class="asset-group"><span class="group-label">Painel CRM (demo)</span><div class="asset-links"><a class="lnk primary" href="painel-lojas-demo.html">Abrir demo</a></div></div><div class="asset-group"><span class="group-label">Formulário do cliente</span><div class="asset-links"><a class="lnk primary" href="onboarding/form-lojas.html">Online · WhatsApp</a><a class="lnk" href="onboarding/onboarding-lojas.docx">Word (.docx)</a></div></div>
       </div>
-      <div class="pitch-actions">
-        <a href="imobiliaria-pitch.html" class="pitch-link">Ver online</a>
-        <a href="imobiliaria-pitch.pdf" class="pitch-link pdf">Baixar PDF</a>
+    </section>
+    <section class="nicho" id="clinicas">
+      <div class="nicho-cat">Saúde · Estética</div>
+      <h2>Clínicas &amp; Consultórios</h2>
+      <p>Atendimento sobre convênios e valores, agendamento anti-falta com fila de espera, recall de retornos e respeito à LGPD.</p>
+      <div class="assets">
+<div class="asset-group"><span class="group-label">Proposta</span><div class="asset-links"><a class="lnk primary" href="clinicas-pitch.html">Ver online</a><a class="lnk" href="clinicas-pitch.pdf">Baixar PDF</a></div></div><div class="asset-group"><span class="group-label">Painel CRM (demo)</span><div class="asset-links"><a class="lnk primary" href="painel-clinicas-demo.html">Abrir demo</a></div></div><div class="asset-group"><span class="group-label">Formulário do cliente</span><div class="asset-links"><a class="lnk primary" href="onboarding/form-clinicas.html">Online · WhatsApp</a><a class="lnk" href="onboarding/onboarding-clinicas.docx">Word (.docx)</a></div></div>
       </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Demo · Painel CRM</div>
-        <h3>Painel — Imobiliária</h3>
-        <p>Mockup interativo do CRM imobiliário: carteira, funil de 5 etapas, agenda de visitas, conversas WhatsApp, VGV em negociação e reativação de leads parados. Light/dark mode.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="painel-imobiliaria-demo.html" class="pitch-link pdf">Abrir demo</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Beleza · Barbearia</div>
-        <h3>Salões & Barbearias</h3>
-        <p>Agendamento automático anti no-show, agente de vendas com upsell de combos, reativação por ciclo de retorno e preenchimento de horários ociosos. R$ 120/mês.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="salao-barbearia-pitch.html" class="pitch-link">Ver online</a>
-        <a href="salao-barbearia-pitch.pdf" class="pitch-link pdf">Baixar PDF</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Demo · Painel CRM</div>
-        <h3>Painel — Salão & Barbearia</h3>
-        <p>Mockup interativo do CRM: agenda do dia por profissional, taxa de ocupação, no-shows evitados, funil de clientes e win-back de clientes sumidos. Light/dark mode.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="painel-salao-barbearia-demo.html" class="pitch-link pdf">Abrir demo</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Condomínios · Prédios</div>
-        <h3>Condomínios</h3>
-        <p>Portaria digital de encomendas com PIN via WhatsApp, atendimento 24/7 ao morador, reserva de áreas comuns, controle de visitantes e comunicados inteligentes. R$ 120/mês.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="condominio-pitch.html" class="pitch-link">Ver online</a>
-        <a href="condominio-pitch.pdf" class="pitch-link pdf">Baixar PDF</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Demo · Painel CRM</div>
-        <h3>Painel — Condomínio</h3>
-        <p>Mockup interativo da central: fluxo de encomendas com PIN, agenda de acessos e reservas, conversas com moradores e encomendas paradas com risco de extravio. Light/dark mode.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="painel-condominio-demo.html" class="pitch-link pdf">Abrir demo</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Varejo · Atacado</div>
-        <h3>Lojas & Atacado</h3>
-        <p>Atendimento 24/7 com preço, tamanho e grade na hora, agente de vendas com upsell e escassez, pedidos com link de pagamento e reativação de revendedores. R$ 120/mês.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="lojas-pitch.html" class="pitch-link">Ver online</a>
-        <a href="lojas-pitch.pdf" class="pitch-link pdf">Baixar PDF</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Demo · Painel CRM</div>
-        <h3>Painel — Lojas & Atacado</h3>
-        <p>Mockup interativo do CRM: funil de pedidos, faturamento atacado x varejo, ticket médio, conversas WhatsApp e reativação de revendedores parados. Light/dark mode.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="painel-lojas-demo.html" class="pitch-link pdf">Abrir demo</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Saúde · Estética</div>
-        <h3>Clínicas & Consultórios</h3>
-        <p>Atendimento 24/7 sobre convênios e valores, agendamento anti-falta com confirmação e fila de espera, recall de retornos e respeito à LGPD. R$ 120/mês.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="clinicas-pitch.html" class="pitch-link">Ver online</a>
-        <a href="clinicas-pitch.pdf" class="pitch-link pdf">Baixar PDF</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Demo · Painel CRM</div>
-        <h3>Painel — Clínicas</h3>
-        <p>Mockup interativo do CRM: agenda por profissional, ocupação, faltas evitadas, funil de pacientes, particular x convênio e retornos pendentes (recall). Light/dark mode.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="painel-clinicas-demo.html" class="pitch-link pdf">Abrir demo</a>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="section-label">Formulário online — cliente responde e cai no seu WhatsApp</div>
-
-  <div class="pitch-list">
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Online · WhatsApp</div>
-        <h3>Formulário web — Auto-Escola</h3>
-        <p>O cliente responde pelo navegador e toca em "Enviar": as respostas chegam no seu WhatsApp já formatadas. Sem Word, sem app.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/form-auto-escola.html" class="pitch-link pdf">Abrir formulário</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Online · WhatsApp</div>
-        <h3>Formulário web — Imobiliária</h3>
-        <p>O cliente responde pelo navegador e toca em "Enviar": as respostas chegam no seu WhatsApp já formatadas. Sem Word, sem app.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/form-imobiliaria.html" class="pitch-link pdf">Abrir formulário</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Online · WhatsApp</div>
-        <h3>Formulário web — Salão & Barbearia</h3>
-        <p>O cliente responde pelo navegador e toca em "Enviar": as respostas chegam no seu WhatsApp já formatadas. Sem Word, sem app.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/form-salao-barbearia.html" class="pitch-link pdf">Abrir formulário</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Online · WhatsApp</div>
-        <h3>Formulário web — Condomínio</h3>
-        <p>O cliente responde pelo navegador e toca em "Enviar": as respostas chegam no seu WhatsApp já formatadas. Sem Word, sem app.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/form-condominio.html" class="pitch-link pdf">Abrir formulário</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Online · WhatsApp</div>
-        <h3>Formulário web — Lojas & Atacado</h3>
-        <p>O cliente responde pelo navegador e toca em "Enviar": as respostas chegam no seu WhatsApp já formatadas. Sem Word, sem app.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/form-lojas.html" class="pitch-link pdf">Abrir formulário</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Online · WhatsApp</div>
-        <h3>Formulário web — Clínicas</h3>
-        <p>O cliente responde pelo navegador e toca em "Enviar": as respostas chegam no seu WhatsApp já formatadas. Sem Word, sem app.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/form-clinicas.html" class="pitch-link pdf">Abrir formulário</a>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="section-label">Formulários de início (Word) — alternativa para preencher offline</div>
-
-  <div class="pitch-list">
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Onboarding · Word</div>
-        <h3>Formulário — Auto-Escola</h3>
-        <p>Tudo que preciso para montar o atendente: categorias, preços, instrutores, veículos, processo e base de alunos. O cliente preenche e devolve.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/onboarding-auto-escola.docx" class="pitch-link pdf">Baixar .docx</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Onboarding · Word</div>
-        <h3>Formulário — Imobiliária</h3>
-        <p>Operação, carteira, corretores, comissão, documentação, financiamento e base de leads. O cliente preenche e devolve.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/onboarding-imobiliaria.docx" class="pitch-link pdf">Baixar .docx</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Onboarding · Word</div>
-        <h3>Formulário — Salão & Barbearia</h3>
-        <p>Serviços com preço e duração, profissionais, política de no-show, fidelidade e base de clientes. O cliente preenche e devolve.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/onboarding-salao-barbearia.docx" class="pitch-link pdf">Baixar .docx</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Onboarding · Word</div>
-        <h3>Formulário — Condomínio</h3>
-        <p>Unidades, portaria e encomendas, áreas comuns, visitantes, atendimento ao morador e regras do prédio. O cliente preenche e devolve.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/onboarding-condominio.docx" class="pitch-link pdf">Baixar .docx</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Onboarding · Word</div>
-        <h3>Formulário — Lojas & Atacado</h3>
-        <p>O que vende, atacado x varejo, pedido mínimo, preços, envio, catálogo, produtos campeões e base de revendedores. O cliente preenche e devolve.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/onboarding-lojas.docx" class="pitch-link pdf">Baixar .docx</a>
-      </div>
-    </div>
-
-    <div class="pitch-card" style="cursor: default;">
-      <div>
-        <div class="pitch-meta">Onboarding · Word</div>
-        <h3>Formulário — Clínicas</h3>
-        <p>Especialidades, profissionais, convênios e valores, confirmação e recall, privacidade (LGPD) e base de pacientes. O cliente preenche e devolve.</p>
-      </div>
-      <div class="pitch-actions">
-        <a href="onboarding/onboarding-clinicas.docx" class="pitch-link pdf">Baixar .docx</a>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="section-label">Em desenvolvimento</div>
-
-  <div class="empty">
-    Novas propostas para outros nichos chegam em breve — academias, clínicas e mais.
-  </div>
+    </section>
 
   <div class="contact-box">
     <h2>Sua empresa precisa de algo específico?</h2>
@@ -520,6 +149,5 @@
   </div>
 
 </div>
-
 </body>
 </html>
