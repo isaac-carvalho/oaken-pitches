@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Restaurantes & Delivery Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0e1311;
+    --panel: #161c19;
+    --panel-2: #1c2421;
+    --line: #262e2a;
+    --line-soft: #1f2723;
+    --ink: #e6e4dd;
+    --ink-soft: #9a9a8e;
+    --ink-mute: #6b6b62;
+    --accent: #5fb38a;
+    --accent-soft: #1d2e25;
+    --accent-line: #2a4a3a;
+    --warn: #d97043;
+    --warn-soft: #2c1f18;
+    --gold: #c79a4f;
+    --gold-soft: #2a2316;
+    --info: #6aa9c4;
+    --info-soft: #182530;
+    --shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.18);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f1ec;
+    --panel: #fbf9f5;
+    --panel-2: #f0ede6;
+    --line: #d8d3ca;
+    --line-soft: #e4dfd5;
+    --ink: #1a1a17;
+    --ink-soft: #4a4a44;
+    --ink-mute: #7a7a72;
+    --accent: #1f4d3a;
+    --accent-soft: #e8efe9;
+    --accent-line: #c3d6c8;
+    --warn: #b8431f;
+    --warn-soft: #fbece4;
+    --gold: #8a6627;
+    --gold-soft: #f5edd8;
+    --info: #2a5a73;
+    --info-soft: #e3eef3;
+    --shadow: 0 1px 0 rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--panel); border-right: 1px solid var(--line); padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .content { padding: 24px; flex: 1; }
+
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 20px; border-bottom: 1px solid var(--line-soft); margin-bottom: 16px; }
+  .brand-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg); font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; }
+  .brand-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: -2px; }
+
+  .nav-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); padding: 14px 10px 6px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.1s, color 0.1s; }
+  .nav-item:hover { background: var(--panel-2); color: var(--ink); }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav-item .badge { margin-left: auto; background: var(--accent); color: var(--bg); font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 600; }
+  .nav-item .badge.warn { background: var(--warn); }
+  .nav-icon { width: 16px; height: 16px; stroke-width: 1.7; stroke: currentColor; fill: none; }
+
+  .breadcrumb { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.02em; }
+  .breadcrumb strong { color: var(--ink); font-weight: 600; }
+  .topbar-spacer { flex: 1; }
+  .search { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; min-width: 260px; gap: 8px; }
+  .search input { background: none; border: none; outline: none; color: var(--ink); font-family: inherit; font-size: 13px; flex: 1; }
+  .search input::placeholder { color: var(--ink-mute); }
+  .icon-btn { width: 32px; height: 32px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-soft); transition: all 0.1s; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .user-chip { display: flex; align-items: center; gap: 10px; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel-2); }
+  .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; }
+  .user-name { font-size: 12px; font-weight: 500; }
+
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+  .page-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; letter-spacing: -0.015em; line-height: 1.1; }
+  .page-sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .live-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .live-dot::before { content: ''; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 0 var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,179,138,0.5); } 70% { box-shadow: 0 0 0 8px rgba(95,179,138,0); } 100% { box-shadow: 0 0 0 0 rgba(95,179,138,0); } }
+  .page-actions { display: flex; gap: 8px; }
+  .btn { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.1s; }
+  .btn:hover { border-color: var(--ink-mute); }
+  .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .kpi-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .kpi-delta { font-size: 11px; margin-top: 8px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; }
+  .kpi-delta.up { color: var(--accent); }
+  .kpi-delta.warn { color: var(--warn); }
+
+  .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); }
+  .card-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line-soft); }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+  .card-sub { font-size: 11px; color: var(--ink-mute); letter-spacing: 0.04em; }
+  .card-link { font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .card-link:hover { text-decoration: underline; }
+
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-soft); }
+  .pipe-col { background: var(--panel); min-height: 280px; padding: 12px; }
+  .pipe-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .pipe-head .name { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+  .pipe-head .count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); background: var(--panel-2); padding: 2px 6px; border-radius: 4px; }
+  .lead-card { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.1s, transform 0.1s; }
+  .lead-card:hover { border-color: var(--accent-line); transform: translateY(-1px); }
+  .lead-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .lead-meta { font-size: 10px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
+  .lead-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .tag { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+  .tag-delivery { background: var(--info-soft); color: var(--info); }
+  .tag-retirada { background: var(--accent-soft); color: var(--accent); }
+  .tag-mesa { background: var(--gold-soft); color: var(--gold); }
+  .tag-hot { background: var(--warn-soft); color: var(--warn); }
+
+  .timeline { padding: 8px 0; }
+  .tl-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); align-items: center; }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-time { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink); font-weight: 600; }
+  .tl-info .who { font-size: 12px; font-weight: 600; }
+  .tl-info .what { font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+  .tl-status { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+  .st-preparo { background: var(--gold-soft); color: var(--gold); }
+  .st-entrega { background: var(--info-soft); color: var(--info); }
+  .st-entregue { background: var(--accent-soft); color: var(--accent); }
+
+  .conv-list { padding: 4px 0; }
+  .conv { display: grid; grid-template-columns: 32px 1fr auto; gap: 10px; padding: 11px 18px; border-bottom: 1px solid var(--line-soft); cursor: pointer; align-items: center; }
+  .conv:hover { background: var(--panel-2); }
+  .conv:last-child { border-bottom: none; }
+  .conv-avatar { width: 32px; height: 32px; background: var(--panel-2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--ink-soft); border: 1px solid var(--line); }
+  .conv-body { min-width: 0; }
+  .conv-name { font-size: 12px; font-weight: 600; }
+  .conv-msg { font-size: 11px; color: var(--ink-mute); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .conv-meta { text-align: right; }
+  .conv-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); }
+  .conv-unread { background: var(--accent); color: var(--bg); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-top: 4px; display: inline-block; }
+  .conv-bot { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-top: 4px; }
+
+  .table { width: 100%; border-collapse: collapse; }
+  .table th, .table td { padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
+  .table th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; background: var(--panel-2); }
+  .table td.mono { font-family: 'JetBrains Mono', monospace; }
+  .days-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 232px; transform: translateX(-100%); z-index: 100; transition: transform 0.2s; }
+    .sidebar.open { transform: translateX(0); }
+    .menu-btn { display: flex !important; }
+    .search { min-width: 0; flex: 1; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { grid-template-columns: 1fr; }
+    .page-title { font-size: 22px; }
+    .topbar { padding: 12px 16px; }
+    .content { padding: 16px; }
+    .user-name { display: none; }
+  }
+  .menu-btn { display: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">O</div>
+      <div>
+        <div class="brand-name">Oaken IA</div>
+        <div class="brand-sub">CRM</div>
+      </div>
+    </div>
+
+    <div class="nav-label">Operação</div>
+    <a class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+      Visão geral
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 18zM3 11v7"/></svg>
+      Pedidos
+      <span class="badge">22</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Conversas
+      <span class="badge">13</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      Reservas
+      <span class="badge">5</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/></svg>
+      Clientes
+    </a>
+
+    <div class="nav-label">Cardápio</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 2v20M3 7h10a4 4 0 0 1 0 8H3M18 2v20"/></svg>
+      Itens
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 7L9 18l-5-5"/></svg>
+      Promoções
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2v20M5 9h11a3 3 0 0 1 0 6H8a3 3 0 0 0 0 6h11"/></svg>
+      Financeiro
+    </a>
+
+    <div class="nav-label">Sistema</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>
+      Configurações
+    </a>
+  </aside>
+
+  <div class="main">
+
+    <header class="topbar">
+      <button class="icon-btn menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="breadcrumb">Cantina do Bairro · <strong>Visão geral</strong></div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="color: var(--ink-mute);"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input placeholder="Buscar pedido, cliente, item...">
+      </div>
+      <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">
+        <svg id="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" title="Notificações">
+        <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </button>
+      <div class="user-chip">
+        <div class="user-avatar">MB</div>
+        <span class="user-name">Marco Bianchi</span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Visão geral</h1>
+          <div class="page-sub">Junho · 2026 — atualizado há 14 segundos</div>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <span class="live-dot">Agente ativo</span>
+          <div class="page-actions">
+            <button class="btn">Exportar</button>
+            <button class="btn btn-primary">+ Novo pedido</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Pedidos hoje</div>
+          <div class="kpi-value">64</div>
+          <div class="kpi-delta up">↑ 18 vs ontem</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Faturamento mês</div>
+          <div class="kpi-value">R$ 71,5k</div>
+          <div class="kpi-delta up">↑ 26% vs maio</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Ticket médio</div>
+          <div class="kpi-value">R$ 58</div>
+          <div class="kpi-delta up">↑ com upsell de combos</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Sem comissão</div>
+          <div class="kpi-value">81%</div>
+          <div class="kpi-delta up">pedidos no WhatsApp direto</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Clientes reativados</div>
+          <div class="kpi-value">26</div>
+          <div class="kpi-delta up">no mês</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Pedidos em andamento — WhatsApp</div>
+            <div class="card-sub">Da cozinha à entrega · em tempo real</div>
+          </div>
+          <a class="card-link">Ver todos →</a>
+        </div>
+        <div class="pipeline">
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Novo</span><span class="count mono">9</span></div>
+            <div class="lead-card">
+              <div class="lead-name">#318 · Mariana Costa</div>
+              <div class="lead-meta">2 pizzas G + refri · R$ 96</div>
+              <div class="lead-tags"><span class="tag tag-delivery">Delivery</span><span class="tag tag-hot">Novo</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">#317 · Rodrigo Sá</div>
+              <div class="lead-meta">2 burgers + fritas · R$ 68</div>
+              <div class="lead-tags"><span class="tag tag-retirada">Retirada</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">#316 · Patrícia Lima</div>
+              <div class="lead-meta">Combo família · R$ 124</div>
+              <div class="lead-tags"><span class="tag tag-delivery">Delivery</span></div>
+            </div>
+          </div>
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Em preparo</span><span class="count mono">11</span></div>
+            <div class="lead-card">
+              <div class="lead-name">#314 · João Pedro</div>
+              <div class="lead-meta">Pizza calabresa · borda catupiry</div>
+              <div class="lead-tags"><span class="tag tag-delivery">Delivery</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">#313 · Andreia F.</div>
+              <div class="lead-meta">Burger duplo · sem cebola</div>
+              <div class="lead-tags"><span class="tag tag-retirada">Retirada</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">#312 · Mesa 7</div>
+              <div class="lead-meta">2 pizzas M + chopp</div>
+              <div class="lead-tags"><span class="tag tag-mesa">Mesa</span></div>
+            </div>
+          </div>
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Saiu p/ entrega</span><span class="count mono">6</span></div>
+            <div class="lead-card">
+              <div class="lead-name">#310 · Beatriz A.</div>
+              <div class="lead-meta">Pizza portuguesa · 18 min</div>
+              <div class="lead-tags"><span class="tag tag-delivery">Delivery</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">#309 · Eduardo T.</div>
+              <div class="lead-meta">3 burgers + milkshake · 12 min</div>
+              <div class="lead-tags"><span class="tag tag-delivery">Delivery</span></div>
+            </div>
+          </div>
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Entregue</span><span class="count mono">38</span></div>
+            <div class="lead-card">
+              <div class="lead-name">#305 · Sofia Marques</div>
+              <div class="lead-meta">pago · R$ 84 · Pix</div>
+              <div class="lead-tags"><span class="tag tag-delivery">Delivery</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">#304 · Helena Vaz</div>
+              <div class="lead-meta">pago · R$ 52 · cartão</div>
+              <div class="lead-tags"><span class="tag tag-retirada">Retirada</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Últimos pedidos</div>
+              <div class="card-sub">64 pedidos hoje · 81% sem comissão de marketplace</div>
+            </div>
+            <a class="card-link">Ver todos →</a>
+          </div>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-time">#318</div>
+              <div class="tl-info">
+                <div class="who">Mariana Costa <span style="color: var(--ink-mute); font-weight: 400;">· delivery</span></div>
+                <div class="what">2 pizzas G + refri 2L · R$ 96 · Pix</div>
+              </div>
+              <span class="tl-status st-preparo">Em preparo</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">#316</div>
+              <div class="tl-info">
+                <div class="who">Patrícia Lima <span style="color: var(--ink-mute); font-weight: 400;">· delivery</span></div>
+                <div class="what">Combo família · R$ 124 · cartão na entrega</div>
+              </div>
+              <span class="tl-status st-preparo">Em preparo</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">#310</div>
+              <div class="tl-info">
+                <div class="who">Beatriz Almeida <span style="color: var(--ink-mute); font-weight: 400;">· delivery</span></div>
+                <div class="what">Pizza portuguesa G · R$ 72 · Pix</div>
+              </div>
+              <span class="tl-status st-entrega">Saiu p/ entrega</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">#305</div>
+              <div class="tl-info">
+                <div class="who">Sofia Marques <span style="color: var(--ink-mute); font-weight: 400;">· delivery</span></div>
+                <div class="what">2 burgers + porção · R$ 84 · Pix</div>
+              </div>
+              <span class="tl-status st-entregue">Entregue</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">#312</div>
+              <div class="tl-info">
+                <div class="who">Mesa 7 <span style="color: var(--ink-mute); font-weight: 400;">· salão</span></div>
+                <div class="what">2 pizzas M + chopp · R$ 110</div>
+              </div>
+              <span class="tl-status st-preparo">Em preparo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Conversas — WhatsApp</div>
+              <div class="card-sub">Agente respondendo · 13 não lidas</div>
+            </div>
+            <a class="card-link">Abrir inbox →</a>
+          </div>
+          <div class="conv-list">
+            <div class="conv">
+              <div class="conv-avatar">MC</div>
+              <div class="conv-body">
+                <div class="conv-name">Mariana Costa</div>
+                <div class="conv-msg">Quero 2 pizzas grandes, entrega no Jd. Europa</div>
+                <div class="conv-bot">↳ Agente · pedidos</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">agora</div><div class="conv-unread">3</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">RS</div>
+              <div class="conv-body">
+                <div class="conv-name">Rodrigo Sá</div>
+                <div class="conv-msg">Vai uma borda recheada por +R$ 8? 🧀</div>
+                <div class="conv-bot">↳ Agente · upsell</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">3 min</div><div class="conv-unread">1</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">JP</div>
+              <div class="conv-body">
+                <div class="conv-name">João Pedro</div>
+                <div class="conv-msg">Quanto tempo pra entregar no Centro?</div>
+                <div class="conv-bot">↳ Agente · atendimento</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">11 min</div><div class="conv-unread">2</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">SN</div>
+              <div class="conv-body">
+                <div class="conv-name">Seu Antônio</div>
+                <div class="conv-msg">Hoje tem a promoção de terça da pizza? 🍕</div>
+                <div class="conv-bot">↳ Agente · reativação</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">26 min</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">PL</div>
+              <div class="conv-body">
+                <div class="conv-name">Patrícia Lima</div>
+                <div class="conv-msg">Aceita Pix? Manda a chave por favor</div>
+                <div class="conv-bot">↳ Agente · pedidos</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">38 min</div><div class="conv-unread">1</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Clientes que sumiram — reativação</div>
+            <div class="card-sub">Não pedem há mais de 20 dias · candidatos a campanha automática</div>
+          </div>
+          <a class="card-link">Disparar campanha →</a>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Costuma pedir</th>
+              <th>Ticket médio</th>
+              <th>Último pedido</th>
+              <th>Telefone</th>
+              <th style="text-align:right;">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lucas Moura</strong></td>
+              <td>Pizza calabresa G</td>
+              <td class="mono">R$ 74</td>
+              <td><span class="days-badge">há 28 dias</span></td>
+              <td class="mono">11••••2244</td>
+              <td style="text-align:right;"><button class="btn">Chamar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Camila Rocha</strong></td>
+              <td>Combo burger duplo</td>
+              <td class="mono">R$ 62</td>
+              <td><span class="days-badge">há 22 dias</span></td>
+              <td class="mono">11••••7782</td>
+              <td style="text-align:right;"><button class="btn">Chamar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Rafael Santos</strong></td>
+              <td>Pizza família + refri</td>
+              <td class="mono">R$ 98</td>
+              <td><span class="days-badge">há 34 dias</span></td>
+              <td class="mono">11••••3091</td>
+              <td style="text-align:right;"><button class="btn">Chamar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Inês Carvalho</strong></td>
+              <td>Burger + milkshake</td>
+              <td class="mono">R$ 56</td>
+              <td><span class="days-badge">há 41 dias</span></td>
+              <td class="mono">11••••5510</td>
+              <td style="text-align:right;"><button class="btn">Chamar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    const icon = document.getElementById('theme-icon');
+    if (next === 'light') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+    try { localStorage.setItem('oaken-theme', next); } catch(e) {}
+  }
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+  try {
+    const saved = localStorage.getItem('oaken-theme');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      const icon = document.getElementById('theme-icon');
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    }
+  } catch(e) {}
+</script>
+
+</body>
+</html>

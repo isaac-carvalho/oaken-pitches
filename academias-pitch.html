@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA — Atendente Digital para Academias e Estúdios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --paper: #fbf9f5;
+    --ink: #1a1a17;
+    --ink-soft: #4a4a44;
+    --line: #d8d3ca;
+    --accent: #1f4d3a;
+    --accent-soft: #e8efe9;
+    --warn: #b8431f;
+    --gold: #b8893f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 32px;
+    background: var(--paper);
+    min-height: 100vh;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 600; }
+  h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 56px 0 20px;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+  }
+  p { color: var(--ink-soft); margin-bottom: 14px; }
+  p.lead { font-size: 19px; line-height: 1.5; color: var(--ink); max-width: 620px; }
+  .rule { height: 1px; background: var(--line); margin: 40px 0; border: none; }
+  .rule-thick { height: 2px; background: var(--ink); margin: 40px 0; border: none; }
+
+  .pain-list { list-style: none; margin: 24px 0; }
+  .pain-list li {
+    padding: 16px 0 16px 36px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    color: var(--ink);
+    font-size: 16px;
+  }
+  .pain-list li:before {
+    content: "✕";
+    position: absolute; left: 4px; top: 16px;
+    color: var(--warn);
+    font-weight: 700;
+  }
+  .pain-list li strong { color: var(--warn); }
+
+  .modules { margin: 24px 0; }
+  .module {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+  .module-num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .module h3 { margin-bottom: 6px; }
+  .module p { margin: 0; font-size: 15px; }
+
+  .compare {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+    font-size: 15px;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row.head {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .compare-row.head .compare-cost { color: var(--paper); }
+  .compare-cost {
+    text-align: right;
+    font-weight: 600;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+  }
+  .compare-row.total {
+    background: var(--accent-soft);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .compare-row.total .compare-cost { color: var(--accent); font-size: 17px; }
+
+  .price-box {
+    border: 2px solid var(--ink);
+    padding: 36px 32px;
+    margin: 40px 0;
+    text-align: center;
+    background: var(--paper);
+    position: relative;
+  }
+  .price-label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .price-value {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .price-value sup { font-size: 24px; vertical-align: top; margin-right: 4px; font-weight: 500; }
+  .price-period { font-size: 16px; color: var(--ink-soft); margin-top: 8px; }
+  .price-note { font-size: 13px; color: var(--ink-soft); margin-top: 18px; font-style: italic; }
+
+  .guarantee {
+    border-left: 4px solid var(--gold);
+    padding: 20px 24px;
+    background: #faf6ed;
+    margin: 32px 0;
+  }
+  .guarantee h3 { color: var(--gold); margin-bottom: 8px; font-size: 15px; letter-spacing: 0.02em; text-transform: uppercase; }
+  .guarantee p { color: var(--ink); margin: 0; }
+
+  .quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    padding: 24px 0 24px 28px;
+    border-left: 3px solid var(--accent);
+    margin: 32px 0;
+  }
+  .quote-attr {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .steps { counter-reset: step; margin: 24px 0; }
+  .step {
+    counter-increment: step;
+    padding: 14px 0 14px 44px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+  .step:before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 14px;
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .step strong { display: block; margin-bottom: 2px; }
+  .step span { font-size: 14px; color: var(--ink-soft); }
+
+  .cta-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 32px;
+    margin: 48px -32px -48px;
+    text-align: center;
+  }
+  .cta-block h2 { color: var(--paper); margin-top: 0; }
+  .cta-block p { color: #bfbfb8; }
+  .cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 32px;
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    border-radius: 2px;
+  }
+  .contact-line {
+    font-size: 14px;
+    color: #9a9a93;
+    margin-top: 18px;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-mark {
+    text-align: center;
+    padding: 24px 0 0;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .header-mark {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .brand-tag {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .math-box {
+    background: var(--accent-soft);
+    padding: 24px 28px;
+    border-radius: 4px;
+    margin: 28px 0;
+  }
+  .math-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    font-size: 15px;
+    border-bottom: 1px dashed rgba(31, 77, 58, 0.25);
+  }
+  .math-line:last-child { border-bottom: none; padding-top: 14px; font-weight: 700; font-size: 17px; color: var(--accent); }
+  .math-line span:last-child { font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 600px) {
+    .page { padding: 32px 20px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+    .price-value { font-size: 56px; }
+    .compare-row { grid-template-columns: 1fr 100px; padding: 12px 14px; font-size: 14px; }
+    .cta-block { margin: 40px -20px -32px; padding: 32px 20px; }
+  }
+
+  @media print {
+    body { background: white; }
+    .page { border: none; max-width: none; padding: 24px 32px; }
+    .cta-block { margin: 32px 0 0; }
+    h2 { page-break-after: avoid; }
+    .price-box, .compare, .math-box, .guarantee { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-mark">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Proposta · Academias & Estúdios · 2026</span>
+  </div>
+
+  <span class="badge">Proposta exclusiva</span>
+
+  <h1>Conquistar aluno novo é caro. O que mata a academia é o aluno que <em>parou de vir</em> e ninguém percebeu.</h1>
+
+  <p class="lead">O lead pergunta o valor do plano e não responde na hora — ele matricula na academia da esquina. A aula experimental é marcada e o cara não aparece. O aluno some há três semanas e vai cancelar no fim do mês. Vale para a musculação e para a luta: o jogo não é só captar, é não deixar escapar.</p>
+
+  <hr class="rule-thick">
+
+  <h2>Os gargalos que toda academia e estúdio tem</h2>
+
+  <ul class="pain-list">
+    <li><strong>Lead que esfria esperando resposta</strong> — "quanto é o plano?", "tem muay thai?" chega de noite e no fim de semana. Sem resposta rápida, ele matricula em outro lugar.</li>
+    <li><strong>Falta na aula experimental</strong> — marcou a experimental e não apareceu. Era o aluno quase fechado, e ninguém confirmou nem chamou de volta.</li>
+    <li><strong>Evasão silenciosa</strong> — o aluno parou de fazer check-in há semanas e ninguém percebeu. No fim do mês ele cancela — e custava 5× menos mantê-lo do que conquistar um novo.</li>
+    <li><strong>Recepção repetindo planos e horários</strong> — valores, modalidades, horário das turmas, o dia todo. Tempo que deveria ser pra fechar matrícula e cuidar de quem está treinando.</li>
+    <li><strong>Mensalidade vencida e a cobrança que ninguém gosta de fazer</strong> — alguém precisa lembrar cada aluno, manualmente, todo mês.</li>
+    <li><strong>Aula experimental e avaliação no caderno</strong> — agenda do professor, turma cheia, personal sem controle. Confusão e horário ocioso.</li>
+    <li><strong>Nova turma, desafio, promoção que ninguém divulga</strong> — você tem uma base de alunos e ex-alunos e nenhum jeito fácil de avisar.</li>
+  </ul>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA faz pela sua academia</h2>
+
+  <p>Não é um chatbot que responde "olá, em que posso ajudar?". É uma equipe digital com 4 agentes treinados para academias e estúdios — musculação, crossfit, lutas, funcional, personal — trabalhando 24 horas no WhatsApp da sua academia.</p>
+
+  <div class="modules">
+
+    <div class="module">
+      <span class="module-num">01</span>
+      <div>
+        <h3>Agente de Atendimento</h3>
+        <p>Responde planos, valores, modalidades e horários de turma em segundos, a qualquer hora. Qualifica o lead pelo objetivo (emagrecer, ganhar massa, competir, defesa pessoal) e entende áudio também. Ninguém fica sem resposta no fim de semana.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">02</span>
+      <div>
+        <h3>Agente de Vendas</h3>
+        <p>Conduz o lead até a aula experimental usando as 6 armas da persuasão de Cialdini — prova social (resultados, comunidade), autoridade (professores e faixas), escassez real ("turma das 19h quase cheia"). Transforma curiosidade em visita marcada.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">03</span>
+      <div>
+        <h3>Agente de Agendamento anti-falta</h3>
+        <p>Marca aula experimental, avaliação física e horário com o personal cruzando a agenda. Confirma na véspera e no dia — quem não confirma é chamado de novo. Menos experimental furada, mais gente pisando no tatame e na sala.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">04</span>
+      <div>
+        <h3>Retenção e anti-evasão</h3>
+        <p>O coração do negócio: detecta o aluno que parou de fazer check-in há X dias e o reativa na hora certa — "senti sua falta no treino, bora voltar?". Parabeniza progresso e aniversário. Manter aluno é muito mais barato que conquistar — e é aqui que a Oaken paga sozinha.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">05</span>
+      <div>
+        <h3>Cobrança e renovação</h3>
+        <p>Lembra da mensalidade no vencimento, de forma educada, e conduz a renovação do plano. Plano vencendo? O agente avisa e já oferece a renovação. Sua recepção livre da cobrança manual.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">06</span>
+      <div>
+        <h3>Painel da academia</h3>
+        <p>Você acompanha pelo celular: matrículas do mês, alunos ativos, aulas experimentais agendadas, alunos em risco de evasão, frequência e faturamento. O comando da academia num lugar só.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="rule">
+
+  <h2>Quanto custa hoje resolver isso "do jeito normal"</h2>
+
+  <div class="compare">
+    <div class="compare-row head">
+      <span>Solução tradicional</span>
+      <span class="compare-cost">Custo/mês</span>
+    </div>
+    <div class="compare-row">
+      <span>Consultor / recepção extra pra atender e vender</span>
+      <span class="compare-cost">R$ 1.600</span>
+    </div>
+    <div class="compare-row">
+      <span>Software de gestão (Tecnofit, Pacto e similares)</span>
+      <span class="compare-cost">R$ 300</span>
+    </div>
+    <div class="compare-row">
+      <span>Ferramenta de disparo de WhatsApp</span>
+      <span class="compare-cost">R$ 180</span>
+    </div>
+    <div class="compare-row">
+      <span>Anúncios pra repor alunos que evadiram</span>
+      <span class="compare-cost">R$ 600</span>
+    </div>
+    <div class="compare-row total">
+      <span>Total mensal</span>
+      <span class="compare-cost">R$ 2.680</span>
+    </div>
+  </div>
+
+  <p>E mesmo gastando isso, o aluno continua evadindo sem aviso, o lead continua esfriando de madrugada, e a experimental continua furando no sábado.</p>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA cobra</h2>
+
+  <div class="price-box">
+    <div class="price-label">Plano único · Tudo incluído</div>
+    <div class="price-value"><sup>R$</sup>120</div>
+    <div class="price-period">por mês · sem fidelidade · sem taxa de instalação</div>
+    <div class="price-note">Cancela quando quiser. Sem contrato amarrado, sem multa.</div>
+  </div>
+
+  <div class="math-box">
+    <div class="math-line"><span>1 matrícula extra por mês (valor de vida médio do aluno)</span><span>R$ 1.200</span></div>
+    <div class="math-line"><span>Custo mensal Oaken IA</span><span>R$ 120</span></div>
+    <div class="math-line"><span>Retorno em uma única matrícula</span><span>10×</span></div>
+  </div>
+
+  <p>E isso é só a captação. <strong>Cada aluno que você não deixa evadir</strong> são mais R$ 150 por mês que continuam entrando — mês após mês. A retenção é onde a Oaken se paga várias vezes.</p>
+
+  <div class="guarantee">
+    <h3>Garantia de 30 dias</h3>
+    <p>Se em 30 dias a Oaken IA não trouxer pelo menos <strong>10 aulas experimentais agendadas</strong> e reativar alunos parados, devolvo o dinheiro integral. Sem perguntas, sem burocracia.</p>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Como funciona pra começar</h2>
+
+  <div class="steps">
+    <div class="step">
+      <strong>Você assina hoje</strong>
+      <span>R$ 120 pelo primeiro mês. Sem instalação, sem taxa.</span>
+    </div>
+    <div class="step">
+      <strong>Em 48h o agente está rodando no WhatsApp da sua academia</strong>
+      <span>Eu configuro modalidades, planos e valores, horários de turma e as regras de confirmação e anti-evasão.</span>
+    </div>
+    <div class="step">
+      <strong>Você recebe o painel no celular</strong>
+      <span>Acompanha em tempo real: matrículas, alunos ativos, experimentais e quem está em risco de evasão.</span>
+    </div>
+    <div class="step">
+      <strong>Eu cuido de manter, atualizar e melhorar</strong>
+      <span>Você não mexe em nada técnico. Nova modalidade, novo plano, mudança de horário — me manda mensagem, eu ajusto.</span>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Por que R$ 120, e não R$ 1.200?</h2>
+
+  <p>Sinceramente: porque eu estou montando carteira inicial em 2026 e quero academias como vitrine. Quando eu tiver 30 clientes, esse plano sai do ar e o preço normal sobe pra R$ 490+. Quem entra agora, trava esse valor enquanto estiver ativo.</p>
+
+  <div class="quote">
+    "Academia não quebra por falta de aluno novo. Quebra pela porta dos fundos — o aluno que sai sem ninguém notar. É essa porta que a gente fecha."
+    <span class="quote-attr">— Isaac · Oaken IA</span>
+  </div>
+
+  <div class="cta-block">
+    <h2>Vamos colocar isso pra rodar essa semana?</h2>
+    <p>Me responde no WhatsApp e em 48h sua academia tem atendimento 24/7, experimental confirmada e anti-evasão funcionando.</p>
+    <a href="https://wa.me/351913388794?text=Ol%C3%A1%2C%20vi%20a%20proposta%20da%20Oaken%20IA%20para%20a%20minha%20academia%20e%20gostaria%20de%20conversar." class="cta-button">Falar no WhatsApp →</a>
+    <div class="contact-line">Isaac · Oaken IA · +351 913 388 794</div>
+  </div>
+
+  <div class="footer-mark">
+    Proposta válida até 30 de Julho de 2026
+  </div>
+
+</div>
+
+</body>
+</html>
