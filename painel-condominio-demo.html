@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Condomínio Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0e1311;
+    --panel: #161c19;
+    --panel-2: #1c2421;
+    --line: #262e2a;
+    --line-soft: #1f2723;
+    --ink: #e6e4dd;
+    --ink-soft: #9a9a8e;
+    --ink-mute: #6b6b62;
+    --accent: #5fb38a;
+    --accent-soft: #1d2e25;
+    --accent-line: #2a4a3a;
+    --warn: #d97043;
+    --warn-soft: #2c1f18;
+    --gold: #c79a4f;
+    --gold-soft: #2a2316;
+    --info: #6aa9c4;
+    --info-soft: #182530;
+    --shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.18);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f1ec;
+    --panel: #fbf9f5;
+    --panel-2: #f0ede6;
+    --line: #d8d3ca;
+    --line-soft: #e4dfd5;
+    --ink: #1a1a17;
+    --ink-soft: #4a4a44;
+    --ink-mute: #7a7a72;
+    --accent: #1f4d3a;
+    --accent-soft: #e8efe9;
+    --accent-line: #c3d6c8;
+    --warn: #b8431f;
+    --warn-soft: #fbece4;
+    --gold: #8a6627;
+    --gold-soft: #f5edd8;
+    --info: #2a5a73;
+    --info-soft: #e3eef3;
+    --shadow: 0 1px 0 rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--panel); border-right: 1px solid var(--line); padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .content { padding: 24px; flex: 1; }
+
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 20px; border-bottom: 1px solid var(--line-soft); margin-bottom: 16px; }
+  .brand-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg); font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; }
+  .brand-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: -2px; }
+
+  .nav-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); padding: 14px 10px 6px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.1s, color 0.1s; }
+  .nav-item:hover { background: var(--panel-2); color: var(--ink); }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav-item .badge { margin-left: auto; background: var(--accent); color: var(--bg); font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 600; }
+  .nav-item .badge.warn { background: var(--warn); }
+  .nav-icon { width: 16px; height: 16px; stroke-width: 1.7; stroke: currentColor; fill: none; }
+
+  .breadcrumb { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.02em; }
+  .breadcrumb strong { color: var(--ink); font-weight: 600; }
+  .topbar-spacer { flex: 1; }
+  .search { display: flex; align-items: center; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; min-width: 260px; gap: 8px; }
+  .search input { background: none; border: none; outline: none; color: var(--ink); font-family: inherit; font-size: 13px; flex: 1; }
+  .search input::placeholder { color: var(--ink-mute); }
+  .icon-btn { width: 32px; height: 32px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-soft); transition: all 0.1s; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .user-chip { display: flex; align-items: center; gap: 10px; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel-2); }
+  .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; }
+  .user-name { font-size: 12px; font-weight: 500; }
+
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+  .page-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; letter-spacing: -0.015em; line-height: 1.1; }
+  .page-sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .live-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .live-dot::before { content: ''; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 0 var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(95,179,138,0.5); } 70% { box-shadow: 0 0 0 8px rgba(95,179,138,0); } 100% { box-shadow: 0 0 0 0 rgba(95,179,138,0); } }
+  .page-actions { display: flex; gap: 8px; }
+  .btn { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.1s; }
+  .btn:hover { border-color: var(--ink-mute); }
+  .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .kpi-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .kpi-delta { font-size: 11px; margin-top: 8px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; }
+  .kpi-delta.up { color: var(--accent); }
+  .kpi-delta.warn { color: var(--warn); }
+
+  .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); }
+  .card-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line-soft); }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+  .card-sub { font-size: 11px; color: var(--ink-mute); letter-spacing: 0.04em; }
+  .card-link { font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .card-link:hover { text-decoration: underline; }
+
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-soft); }
+  .pipe-col { background: var(--panel); min-height: 280px; padding: 12px; }
+  .pipe-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .pipe-head .name { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+  .pipe-head .count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); background: var(--panel-2); padding: 2px 6px; border-radius: 4px; }
+  .lead-card { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.1s, transform 0.1s; }
+  .lead-card:hover { border-color: var(--accent-line); transform: translateY(-1px); }
+  .lead-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .lead-meta { font-size: 10px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
+  .lead-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .tag { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+  .tag-pin { background: var(--info-soft); color: var(--info); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em; }
+  .tag-frag { background: var(--gold-soft); color: var(--gold); }
+  .tag-old { background: var(--warn-soft); color: var(--warn); }
+  .tag-ok { background: var(--accent-soft); color: var(--accent); }
+
+  .timeline { padding: 8px 0; }
+  .tl-item { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); align-items: center; }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-time { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--ink); font-weight: 600; }
+  .tl-info .who { font-size: 12px; font-weight: 600; }
+  .tl-info .what { font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+  .tl-status { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+  .st-confirm { background: var(--accent-soft); color: var(--accent); }
+  .st-pending { background: var(--gold-soft); color: var(--gold); }
+  .st-risk { background: var(--warn-soft); color: var(--warn); }
+  .st-info { background: var(--info-soft); color: var(--info); }
+
+  .conv-list { padding: 4px 0; }
+  .conv { display: grid; grid-template-columns: 32px 1fr auto; gap: 10px; padding: 11px 18px; border-bottom: 1px solid var(--line-soft); cursor: pointer; align-items: center; }
+  .conv:hover { background: var(--panel-2); }
+  .conv:last-child { border-bottom: none; }
+  .conv-avatar { width: 32px; height: 32px; background: var(--panel-2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--ink-soft); border: 1px solid var(--line); }
+  .conv-body { min-width: 0; }
+  .conv-name { font-size: 12px; font-weight: 600; }
+  .conv-msg { font-size: 11px; color: var(--ink-mute); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .conv-meta { text-align: right; }
+  .conv-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-mute); }
+  .conv-unread { background: var(--accent); color: var(--bg); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px; margin-top: 4px; display: inline-block; }
+  .conv-bot { font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-top: 4px; }
+
+  .table { width: 100%; border-collapse: collapse; }
+  .table th, .table td { padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
+  .table th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; background: var(--panel-2); }
+  .table td.mono { font-family: 'JetBrains Mono', monospace; }
+  .pin-chip { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.15em; padding: 2px 8px; border-radius: 4px; background: var(--info-soft); color: var(--info); }
+  .days-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 232px; transform: translateX(-100%); z-index: 100; transition: transform 0.2s; }
+    .sidebar.open { transform: translateX(0); }
+    .menu-btn { display: flex !important; }
+    .search { min-width: 0; flex: 1; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { grid-template-columns: 1fr; }
+    .page-title { font-size: 22px; }
+    .topbar { padding: 12px 16px; }
+    .content { padding: 16px; }
+    .user-name { display: none; }
+  }
+  .menu-btn { display: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">O</div>
+      <div>
+        <div class="brand-name">Oaken IA</div>
+        <div class="brand-sub">CRM</div>
+      </div>
+    </div>
+
+    <div class="nav-label">Portaria</div>
+    <a class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+      Visão geral
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8zM3 8l9 5 9-5M12 13v8"/></svg>
+      Encomendas
+      <span class="badge warn">14</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      Conversas
+      <span class="badge">9</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 11h-6M19 8v6"/></svg>
+      Visitantes
+      <span class="badge">23</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Ocorrências
+      <span class="badge warn">3</span>
+    </a>
+
+    <div class="nav-label">Condomínio</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 12v.01M9 15v.01"/></svg>
+      Moradores
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      Reservas
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      Comunicados
+    </a>
+
+    <div class="nav-label">Sistema</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>
+      Configurações
+    </a>
+  </aside>
+
+  <div class="main">
+
+    <header class="topbar">
+      <button class="icon-btn menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="breadcrumb">Condomínio Parque das Acácias · <strong>Visão geral</strong></div>
+      <div class="topbar-spacer"></div>
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="color: var(--ink-mute);"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input placeholder="Buscar morador, unidade, PIN...">
+      </div>
+      <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">
+        <svg id="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" title="Notificações">
+        <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      </button>
+      <div class="user-chip">
+        <div class="user-avatar">SP</div>
+        <span class="user-name">Sérgio Pinto</span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Visão geral</h1>
+          <div class="page-sub">Junho · 2026 — atualizado há 12 segundos</div>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <span class="live-dot">Central ativa</span>
+          <div class="page-actions">
+            <button class="btn">Comunicado</button>
+            <button class="btn btn-primary">+ Registrar encomenda</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Encomendas pendentes</div>
+          <div class="kpi-value">14</div>
+          <div class="kpi-delta warn">3 há mais de 5 dias</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Unidades</div>
+          <div class="kpi-value">186</div>
+          <div class="kpi-delta up">172 no WhatsApp</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Reservas na semana</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-delta">salão, churrasqueira</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Visitantes hoje</div>
+          <div class="kpi-value">23</div>
+          <div class="kpi-delta up">todos pré-autorizados</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Ocorrências abertas</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-delta warn">1 aguardando síndico</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Encomendas — fluxo da portaria</div>
+            <div class="card-sub">Foto da etiqueta → IA lê → PIN no WhatsApp → retirada confirmada</div>
+          </div>
+          <a class="card-link">Ver todas →</a>
+        </div>
+        <div class="pipeline">
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Recebida</span><span class="count mono">5</span></div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 304 · Bloco B</div>
+              <div class="lead-meta">há 6 min · Mercado Livre</div>
+              <div class="lead-tags"><span class="tag tag-ok">Lida pela IA</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 1102 · Bloco A</div>
+              <div class="lead-meta">há 14 min · Amazon</div>
+              <div class="lead-tags"><span class="tag tag-frag">Frágil</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 507 · Bloco C</div>
+              <div class="lead-meta">há 28 min · Shein</div>
+              <div class="lead-tags"><span class="tag tag-ok">Lida pela IA</span></div>
+            </div>
+          </div>
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Morador avisado</span><span class="count mono">14</span></div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 802 · Bloco A</div>
+              <div class="lead-meta">PIN enviado há 1h</div>
+              <div class="lead-tags"><span class="tag tag-pin">PIN 4471</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 206 · Bloco B</div>
+              <div class="lead-meta">PIN enviado há 2h</div>
+              <div class="lead-tags"><span class="tag tag-pin">PIN 8830</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 1404 · Bloco C</div>
+              <div class="lead-meta">PIN reenviado ontem</div>
+              <div class="lead-tags"><span class="tag tag-pin">PIN 2215</span><span class="tag tag-old">5 dias</span></div>
+            </div>
+          </div>
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Aguardando retirada</span><span class="count mono">9</span></div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 101 · Bloco A</div>
+              <div class="lead-meta">morador confirmou vinda</div>
+              <div class="lead-tags"><span class="tag tag-pin">PIN 6093</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 909 · Bloco B</div>
+              <div class="lead-meta">avisou: retira à noite</div>
+              <div class="lead-tags"><span class="tag tag-pin">PIN 7741</span></div>
+            </div>
+          </div>
+
+          <div class="pipe-col">
+            <div class="pipe-head"><span class="name">Retirada hoje</span><span class="count mono">31</span></div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 405 · Bloco C</div>
+              <div class="lead-meta">14:22 · PIN ok · reg. ✓</div>
+              <div class="lead-tags"><span class="tag tag-ok">Confirmada</span></div>
+            </div>
+            <div class="lead-card">
+              <div class="lead-name">Apto 703 · Bloco A</div>
+              <div class="lead-meta">11:08 · PIN ok · reg. ✓</div>
+              <div class="lead-tags"><span class="tag tag-ok">Confirmada</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Agenda do dia — acessos e reservas</div>
+              <div class="card-sub">Visitantes pré-autorizados, prestadores e áreas comuns</div>
+            </div>
+            <a class="card-link">Agenda completa →</a>
+          </div>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-time">09:30</div>
+              <div class="tl-info">
+                <div class="who">Prestador · Dedetização <span style="color: var(--ink-mute); font-weight: 400;">· áreas comuns</span></div>
+                <div class="what">Autorizado pelo síndico · 2 técnicos</div>
+              </div>
+              <span class="tl-status st-info">Prestador</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">14:00</div>
+              <div class="tl-info">
+                <div class="who">Visita · Apto 802 Bloco A <span style="color: var(--ink-mute); font-weight: 400;">· Família Souza</span></div>
+                <div class="what">Pré-autorizado pelo morador via WhatsApp</div>
+              </div>
+              <span class="tl-status st-confirm">Autorizado</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">16:00</div>
+              <div class="tl-info">
+                <div class="who">Reserva · Salão de festas <span style="color: var(--ink-mute); font-weight: 400;">· Apto 1102</span></div>
+                <div class="what">Aniversário · até 22h · taxa quitada</div>
+              </div>
+              <span class="tl-status st-confirm">Confirmada</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">18:30</div>
+              <div class="tl-info">
+                <div class="who">Entrega · Gás <span style="color: var(--ink-mute); font-weight: 400;">· Apto 305 Bloco B</span></div>
+                <div class="what">Aguardando autorização do morador</div>
+              </div>
+              <span class="tl-status st-pending">Aguardando</span>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">19:00</div>
+              <div class="tl-info">
+                <div class="who">Reserva · Churrasqueira <span style="color: var(--ink-mute); font-weight: 400;">· Apto 507</span></div>
+                <div class="what">Confraternização · até 23h</div>
+              </div>
+              <span class="tl-status st-confirm">Confirmada</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Conversas — moradores</div>
+              <div class="card-sub">Agente respondendo · 9 não lidas</div>
+            </div>
+            <a class="card-link">Abrir inbox →</a>
+          </div>
+          <div class="conv-list">
+            <div class="conv">
+              <div class="conv-avatar">802</div>
+              <div class="conv-body">
+                <div class="conv-name">Carla Mendes · Apto 802</div>
+                <div class="conv-msg">Recebi o PIN, retiro a encomenda hoje à noite!</div>
+                <div class="conv-bot">↳ Agente · portaria</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">agora</div><div class="conv-unread">1</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">1102</div>
+              <div class="conv-body">
+                <div class="conv-name">Paulo Reis · Apto 1102</div>
+                <div class="conv-msg">Confirmo a reserva do salão pro dia 28 👍</div>
+                <div class="conv-bot">↳ Agente · reservas</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">7 min</div><div class="conv-unread">2</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">305</div>
+              <div class="conv-body">
+                <div class="conv-name">Ana Brito · Apto 305</div>
+                <div class="conv-msg">Pode liberar a entrega de gás às 18h30, autorizo.</div>
+                <div class="conv-bot">↳ Agente · visitantes</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">15 min</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">404</div>
+              <div class="conv-body">
+                <div class="conv-name">Marcos Lima · Apto 404</div>
+                <div class="conv-msg">Preciso da 2ª via do boleto deste mês.</div>
+                <div class="conv-bot">↳ Agente · atendimento</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">26 min</div><div class="conv-unread">3</div></div>
+            </div>
+            <div class="conv">
+              <div class="conv-avatar">607</div>
+              <div class="conv-body">
+                <div class="conv-name">Júlia Castro · Apto 607</div>
+                <div class="conv-msg">Quero registrar barulho do apto de cima após 23h.</div>
+                <div class="conv-bot">↳ Agente · ocorrências</div>
+              </div>
+              <div class="conv-meta"><div class="conv-time">41 min</div><div class="conv-unread">1</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Encomendas paradas — atenção</div>
+            <div class="card-sub">Aguardando retirada há mais de 4 dias · risco de extravio</div>
+          </div>
+          <a class="card-link">Reenviar avisos →</a>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Unidade</th>
+              <th>Remetente</th>
+              <th>PIN</th>
+              <th>Recebida</th>
+              <th>Morador</th>
+              <th style="text-align:right;">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Apto 1404 · Bloco C</strong></td>
+              <td>Amazon</td>
+              <td><span class="pin-chip">2215</span></td>
+              <td><span class="days-badge">há 5 dias</span></td>
+              <td class="mono">91••••2244</td>
+              <td style="text-align:right;"><button class="btn">Reavisar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Apto 209 · Bloco A</strong></td>
+              <td>Correios</td>
+              <td><span class="pin-chip">9087</span></td>
+              <td><span class="days-badge">há 6 dias</span></td>
+              <td class="mono">93••••7782</td>
+              <td style="text-align:right;"><button class="btn">Reavisar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Apto 711 · Bloco B</strong></td>
+              <td>Shopee</td>
+              <td><span class="pin-chip">3340</span></td>
+              <td><span class="days-badge">há 8 dias</span></td>
+              <td class="mono">91••••3091</td>
+              <td style="text-align:right;"><button class="btn">Reavisar</button></td>
+            </tr>
+            <tr>
+              <td><strong>Apto 503 · Bloco C</strong></td>
+              <td>Mercado Livre</td>
+              <td><span class="pin-chip">1158</span></td>
+              <td><span class="days-badge">há 4 dias</span></td>
+              <td class="mono">92••••5510</td>
+              <td style="text-align:right;"><button class="btn">Reavisar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    const icon = document.getElementById('theme-icon');
+    if (next === 'light') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+    try { localStorage.setItem('oaken-theme', next); } catch(e) {}
+  }
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+  try {
+    const saved = localStorage.getItem('oaken-theme');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      const icon = document.getElementById('theme-icon');
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    }
+  } catch(e) {}
+</script>
+
+</body>
+</html>
