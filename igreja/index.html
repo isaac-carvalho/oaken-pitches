@@ -83,10 +83,10 @@
   var frame=document.getElementById('frame'), loading=document.getElementById('loading');
   document.querySelectorAll('.nav button').forEach(function(b){
     b.addEventListener('click',function(){
-      if(b.classList.contains('active')) return;
       document.querySelectorAll('.nav button').forEach(function(x){x.classList.remove('active');});
       b.classList.add('active');
       loading.style.display='flex';
+      // sempre recarrega (mesmo se já ativa): garante voltar ao conteúdo se o iframe tiver navegado
       frame.src=b.getAttribute('data-src');
     });
   });
