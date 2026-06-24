@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário de início — Assistente Pessoal — Oaken IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f1ec;--paper:#fbf9f5;--ink:#1a1a17;--ink-soft:#4a4a44;--line:#d8d3ca;
+--accent:#1f4d3a;--accent-soft:#e8efe9;--gold:#b8893f;--cinza:#7a7a72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased;}
+.page{max-width:680px;margin:0 auto;padding:40px 28px 64px;background:var(--paper);min-height:100vh;
+border-left:1px solid var(--line);border-right:1px solid var(--line);}
+.head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);
+padding-bottom:18px;margin-bottom:28px;}
+.brand{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;}
+.brand-tag{font-size:11px;color:var(--cinza);letter-spacing:.14em;text-transform:uppercase;}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:32px;line-height:1.12;
+letter-spacing:-.02em;margin-bottom:12px;}
+.intro{color:var(--ink-soft);margin-bottom:8px;}
+.note{color:var(--cinza);font-style:italic;font-size:14px;margin-bottom:24px;}
+.secao{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;color:var(--accent);
+margin:34px 0 4px;padding-bottom:8px;border-bottom:2px solid var(--accent);letter-spacing:-.01em;}
+.campo{margin:18px 0;}
+label{display:block;font-weight:600;font-size:15px;margin-bottom:4px;}
+.ajuda{display:block;color:var(--cinza);font-size:13px;font-style:italic;margin-bottom:8px;}
+input[type=text],textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px 12px;outline:none;
+transition:border-color .12s;}
+input[type=text]:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:64px;}
+.acoes{position:sticky;bottom:0;background:linear-gradient(transparent,var(--paper) 22%);
+padding-top:28px;margin-top:36px;}
+.btn{display:block;width:100%;text-align:center;padding:16px;border:none;border-radius:8px;
+font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.01em;}
+.btn-wa{background:var(--accent);color:var(--paper);margin-bottom:10px;}
+.btn-wa:hover{filter:brightness(1.08);}
+.btn-copy{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+.btn-copy:hover{background:var(--accent-soft);}
+.ok{text-align:center;color:var(--accent);font-size:14px;font-weight:600;margin-top:10px;min-height:18px;}
+.footer{text-align:center;color:var(--cinza);font-size:12px;margin-top:28px;letter-spacing:.04em;}
+@media(max-width:600px){.page{padding:28px 18px 56px;}h1{font-size:26px;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Formulário · Assistente Pessoal</span>
+  </div>
+  <h1>Formulário de início — Assistente Pessoal</h1>
+  <p class="intro">Poucas respostas e seu assistente pessoal de finanças já começa a trabalhar pra você no WhatsApp.</p>
+  <p class="note">Não precisa responder tudo de uma vez nem com perfeição. O que não souber, deixe em branco — a gente resolve junto.</p>
+
+  <form id="form" onsubmit="return false;">
+<div class="secao">Parte 1 · Você</div>
+<div class="campo"><label for="c0">1. Seu nome e o WhatsApp que vai usar com o assistente</label><input type="text" id="c0" data-q="Seu nome e o WhatsApp que vai usar com o assistente"></div>
+<div class="campo"><label for="c1">2. Em que fuso/país você está?</label><span class="ajuda">Pra os lembretes chegarem no horário certo (Brasil, Portugal, Angola...)</span><input type="text" id="c1" data-q="Em que fuso/país você está"></div>
+<div class="secao">Parte 2 · Suas moedas</div>
+<div class="campo"><label for="c2">3. Em quais moedas você gasta no dia a dia?</label><span class="ajuda">Real (R$), Euro (€), Dólar (US$), Kwanza (Kz)... pode ser mais de uma</span><textarea id="c2" rows="3" data-q="Em quais moedas você gasta no dia a dia"></textarea></div>
+<div class="campo"><label for="c3">4. Qual é a sua moeda principal?</label><span class="ajuda">A que você mais usa — vira o padrão quando você não disser a moeda</span><input type="text" id="c3" data-q="Qual é a sua moeda principal"></div>
+<div class="secao">Parte 3 · O que você quer acompanhar</div>
+<div class="campo"><label for="c4">5. Quais categorias de gasto fazem sentido pra você?</label><span class="ajuda">Ex.: alimentação, transporte, lazer, contas, vestuário, saúde... ou deixe em branco que eu sugiro um conjunto pronto</span><textarea id="c4" rows="4" data-q="Quais categorias de gasto fazem sentido pra você"></textarea></div>
+<div class="campo"><label for="c5">6. Você quer uma meta de gasto por mês? De quanto?</label><span class="ajuda">Opcional — se quiser, o assistente te avisa quando estiver chegando perto</span><input type="text" id="c5" data-q="Você quer uma meta de gasto por mês"></div>
+<div class="secao">Parte 4 · Lembretes e tarefas</div>
+<div class="campo"><label for="c6">7. Quer usar o assistente também pra lembretes de tarefas?</label><span class="ajuda">Ex.: contas a pagar, ligações, compromissos</span><input type="text" id="c6" data-q="Quer usar o assistente também pra lembretes de tarefas"></div>
+<div class="campo"><label for="c7">8. Com quanta antecedência prefere ser avisado?</label><span class="ajuda">Ex.: 10 minutos antes, 1 hora antes, na véspera de manhã</span><input type="text" id="c7" data-q="Com quanta antecedência prefere ser avisado"></div>
+<div class="secao">Parte 5 · Seu jeito</div>
+<div class="campo"><label for="c8">9. Você prefere conversar mais por texto, por áudio, ou os dois?</label><input type="text" id="c8" data-q="Você prefere conversar mais por texto, por áudio, ou os dois"></div>
+<div class="campo"><label for="c9">10. Como você tenta controlar suas finanças hoje?</label><span class="ajuda">Planilha, app, anotações, nada? Isso me ajuda a entender o que estava faltando pra você</span><textarea id="c9" rows="3" data-q="Como você tenta controlar suas finanças hoje"></textarea></div>
+  </form>
+
+  <div class="acoes">
+    <button type="button" id="btn-wa" class="btn btn-wa">Enviar pelo WhatsApp →</button>
+    <button type="button" id="btn-copy" class="btn btn-copy">Copiar respostas</button>
+    <div id="ok" class="ok"></div>
+  </div>
+
+  <div class="footer">Oaken IA · Isaac · +351 913 388 794</div>
+</div>
+<script>
+(function(){
+  var DEST = "351913388794";
+  function montarTexto(){
+    var campos = document.querySelectorAll('[data-q]');
+    var linhas = ['*Formulario Oaken IA - Assistente Pessoal*',''];
+    campos.forEach(function(c){
+      var v = (c.value || '').trim();
+      if(!v) return;
+      linhas.push('*' + c.getAttribute('data-q') + '*');
+      linhas.push(v);
+      linhas.push('');
+    });
+    if(linhas.length <= 2){ return null; }
+    return linhas.join('\n');
+  }
+  function enviar(){
+    var texto = montarTexto();
+    if(!texto){ msg('Preencha pelo menos uma resposta antes de enviar.', true); return; }
+    var url = 'https://wa.me/' + DEST + '?text=' + encodeURIComponent(texto);
+    window.open(url, '_blank');
+    msg('Abrindo o WhatsApp... e so tocar em enviar.');
+  }
+  function copiar(){
+    var texto = montarTexto();
+    if(!texto){ msg('Preencha pelo menos uma resposta antes de copiar.', true); return; }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(function(){ msg('Respostas copiadas! Cole no WhatsApp do Isaac.'); },
+        function(){ fallbackCopy(texto); });
+    } else { fallbackCopy(texto); }
+  }
+  function fallbackCopy(texto){
+    var ta = document.createElement('textarea'); ta.value = texto;
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Respostas copiadas! Cole no WhatsApp do Isaac.'); }
+    catch(e){ msg('Nao consegui copiar automaticamente.', true); }
+    document.body.removeChild(ta);
+  }
+  function msg(t, erro){
+    var el = document.getElementById('ok');
+    el.textContent = t;
+    el.style.color = erro ? '#b8431f' : '#1f4d3a';
+  }
+  document.getElementById('btn-wa').addEventListener('click', enviar);
+  document.getElementById('btn-copy').addEventListener('click', copiar);
+})();
+</script>
+</body>
+</html>

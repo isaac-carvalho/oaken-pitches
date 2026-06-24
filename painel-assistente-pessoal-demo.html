@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Assistente Pessoal Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0a0a0f; --panel: #13131c; --panel-2: #1a1a26; --line: #262633; --line-soft: #1f1f2b;
+    --ink: #e8e8f0; --ink-soft: #a0a0b5; --ink-mute: #6a6a80;
+    --accent: #8b5cf6; --accent-soft: #211a3a; --cyan: #22d3ee; --cyan-soft: #0e2a30;
+    --green: #34d399; --green-soft: #0f2c22; --red: #fb7185; --red-soft: #2e1620; --yellow: #fbbf24; --yellow-soft: #2c2410;
+    --grad: linear-gradient(135deg,#8b5cf6,#22d3ee);
+    --shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.25);
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f2fb; --panel: #ffffff; --panel-2: #f0eef9; --line: #e2def0; --line-soft: #ece9f6;
+    --ink: #1a1a2e; --ink-soft: #5a5a7a; --ink-mute: #8a8aa0;
+    --accent: #7c3aed; --accent-soft: #efe9fc; --cyan: #0891b2; --cyan-soft: #e0f4f8;
+    --green: #059669; --green-soft: #e3f5ee; --red: #e11d48; --red-soft: #fce8ec; --yellow: #d97706; --yellow-soft: #fdf2e0;
+    --grad: linear-gradient(135deg,#7c3aed,#0891b2);
+    --shadow: 0 1px 0 rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--panel); border-right: 1px solid var(--line); padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .content { padding: 24px; flex: 1; }
+
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 20px; border-bottom: 1px solid var(--line-soft); margin-bottom: 16px; }
+  .brand-mark { width: 28px; height: 28px; background: var(--grad); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; }
+  .brand-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: -2px; }
+
+  .nav-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); padding: 14px 10px 6px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.1s, color 0.1s; }
+  .nav-item:hover { background: var(--panel-2); color: var(--ink); }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav-item .badge { margin-left: auto; background: var(--accent); color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 600; }
+  .nav-icon { width: 16px; height: 16px; stroke-width: 1.7; stroke: currentColor; fill: none; }
+
+  .breadcrumb { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.02em; }
+  .breadcrumb strong { color: var(--ink); font-weight: 600; }
+  .topbar-spacer { flex: 1; }
+  .month-pill { display: flex; align-items: center; gap: 8px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 600; }
+  .icon-btn { width: 32px; height: 32px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-soft); transition: all 0.1s; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .user-chip { display: flex; align-items: center; gap: 10px; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel-2); }
+  .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--grad); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; }
+  .user-name { font-size: 12px; font-weight: 500; }
+
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+  .page-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; letter-spacing: -0.015em; line-height: 1.1; }
+  .page-sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .live-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+  .live-dot::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.5); } 70% { box-shadow: 0 0 0 8px rgba(52,211,153,0); } 100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); } }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .kpi-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .kpi-value small { font-size: 13px; color: var(--ink-mute); }
+  .kpi-delta { font-size: 11px; margin-top: 8px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; }
+  .kpi-delta.up { color: var(--red); }
+  .kpi-delta.down { color: var(--green); }
+
+  .grid-2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+  .card-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line-soft); }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+  .card-sub { font-size: 11px; color: var(--ink-mute); letter-spacing: 0.04em; }
+  .card-link { font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; }
+  .card-body { padding: 18px; }
+
+  /* gastos por categoria */
+  .cat-row { display: grid; grid-template-columns: 110px 1fr 88px; gap: 12px; align-items: center; padding: 9px 0; }
+  .cat-name { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .cat-dot { width: 9px; height: 9px; border-radius: 3px; }
+  .cat-bar-track { background: var(--panel-2); border-radius: 6px; height: 10px; overflow: hidden; }
+  .cat-bar { height: 100%; border-radius: 6px; }
+  .cat-val { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; }
+
+  /* moedas */
+  .moeda-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .moeda { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 10px; padding: 14px; }
+  .moeda-flag { font-size: 11px; color: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+  .moeda-val { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+
+  /* lançamentos */
+  .lanc { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; padding: 11px 18px; border-bottom: 1px solid var(--line-soft); align-items: center; }
+  .lanc:last-child { border-bottom: none; }
+  .lanc-ico { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; background: var(--panel-2); }
+  .lanc-desc { font-size: 13px; font-weight: 600; }
+  .lanc-meta { font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+  .lanc-meta .src { color: var(--cyan); font-weight: 600; }
+  .lanc-val { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
+
+  /* tarefas */
+  .task { display: grid; grid-template-columns: 22px 1fr auto; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); align-items: center; }
+  .task:last-child { border-bottom: none; }
+  .task-check { width: 18px; height: 18px; border: 1.6px solid var(--ink-mute); border-radius: 5px; }
+  .task-check.done { background: var(--green); border-color: var(--green); position: relative; }
+  .task-check.done::after { content: '✓'; color: #fff; font-size: 12px; position: absolute; top: -2px; left: 3px; font-weight: 700; }
+  .task-txt { font-size: 13px; font-weight: 500; }
+  .task.done .task-txt { color: var(--ink-mute); text-decoration: line-through; }
+  .task-when { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 9px; border-radius: 6px; font-weight: 600; }
+  .when-soon { background: var(--yellow-soft); color: var(--yellow); }
+  .when-future { background: var(--panel-2); color: var(--ink-mute); }
+  .when-done { background: var(--green-soft); color: var(--green); }
+
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } .grid-2 { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 232px; transform: translateX(-100%); z-index: 100; transition: transform 0.2s; }
+    .sidebar.open { transform: translateX(0); }
+    .menu-btn { display: flex !important; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .page-title { font-size: 22px; } .topbar { padding: 12px 16px; } .content { padding: 16px; }
+    .user-name { display: none; } .cat-row { grid-template-columns: 90px 1fr 76px; }
+  }
+  .menu-btn { display: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">O</div>
+      <div>
+        <div class="brand-name">Oaken</div>
+        <div class="brand-sub">Pessoal</div>
+      </div>
+    </div>
+
+    <div class="nav-label">Minhas finanças</div>
+    <a class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Resumo do mês
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Lançamentos
+      <span class="badge">63</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+      Categorias
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M1 4h22M1 12h22M1 20h22"/></svg>
+      Moedas
+    </a>
+
+    <div class="nav-label">Dia a dia</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tarefas & lembretes
+      <span class="badge">3</span>
+    </a>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Conversa (WhatsApp)
+    </a>
+
+    <div class="nav-label">Conta</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>
+      Configurações
+    </a>
+  </aside>
+
+  <div class="main">
+
+    <header class="topbar">
+      <button class="icon-btn menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="breadcrumb">Ana Beatriz · <strong>Resumo do mês</strong></div>
+      <div class="topbar-spacer"></div>
+      <div class="month-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Junho 2026
+      </div>
+      <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">
+        <svg id="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <div class="user-chip">
+        <div class="user-avatar">AB</div>
+        <span class="user-name">Ana</span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <div class="page-head">
+        <div>
+          <h1 class="page-title">Resumo do mês</h1>
+          <div class="page-sub">Você registrou 63 gastos este mês · último há 12 minutos</div>
+        </div>
+        <span class="live-dot">Assistente ativo</span>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Gasto no mês (R$)</div>
+          <div class="kpi-value">R$ 3.847<small>,20</small></div>
+          <div class="kpi-delta up">↑ 8% vs maio</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Maior categoria</div>
+          <div class="kpi-value" style="font-size:18px;">Alimentação</div>
+          <div class="kpi-delta">R$ 1.120 · 29%</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Gastos invisíveis (&lt;R$20)</div>
+          <div class="kpi-value">R$ 612<small>,40</small></div>
+          <div class="kpi-delta">41 comprinhas no mês</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Tarefas pendentes</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-delta">1 pra hoje</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Para onde foi o seu dinheiro</div>
+              <div class="card-sub">Junho · por categoria · em reais</div>
+            </div>
+            <a class="card-link">Ver detalhes →</a>
+          </div>
+          <div class="card-body">
+            <div class="cat-row">
+              <div class="cat-name"><span class="cat-dot" style="background:#8b5cf6"></span>Alimentação</div>
+              <div class="cat-bar-track"><div class="cat-bar" style="width:100%;background:#8b5cf6"></div></div>
+              <div class="cat-val">R$ 1.120</div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-name"><span class="cat-dot" style="background:#22d3ee"></span>Transporte</div>
+              <div class="cat-bar-track"><div class="cat-bar" style="width:62%;background:#22d3ee"></div></div>
+              <div class="cat-val">R$ 695</div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-name"><span class="cat-dot" style="background:#34d399"></span>Lazer</div>
+              <div class="cat-bar-track"><div class="cat-bar" style="width:51%;background:#34d399"></div></div>
+              <div class="cat-val">R$ 572</div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-name"><span class="cat-dot" style="background:#fbbf24"></span>Contas/casa</div>
+              <div class="cat-bar-track"><div class="cat-bar" style="width:47%;background:#fbbf24"></div></div>
+              <div class="cat-val">R$ 528</div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-name"><span class="cat-dot" style="background:#fb7185"></span>Vestuário</div>
+              <div class="cat-bar-track"><div class="cat-bar" style="width:38%;background:#fb7185"></div></div>
+              <div class="cat-val">R$ 430</div>
+            </div>
+            <div class="cat-row">
+              <div class="cat-name"><span class="cat-dot" style="background:#a0a0b5"></span>Outros</div>
+              <div class="cat-bar-track"><div class="cat-bar" style="width:44%;background:#a0a0b5"></div></div>
+              <div class="cat-val">R$ 502</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Por moeda</div>
+              <div class="card-sub">Sem misturar · cada uma separada</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="moeda-grid">
+              <div class="moeda">
+                <div class="moeda-flag">🇧🇷 Real</div>
+                <div class="moeda-val">R$ 3.847</div>
+              </div>
+              <div class="moeda">
+                <div class="moeda-flag">🇪🇺 Euro</div>
+                <div class="moeda-val">€ 312</div>
+              </div>
+              <div class="moeda">
+                <div class="moeda-flag">🇺🇸 Dólar</div>
+                <div class="moeda-val">US$ 89</div>
+              </div>
+              <div class="moeda">
+                <div class="moeda-flag">🇦🇴 Kwanza</div>
+                <div class="moeda-val">Kz 24.500</div>
+              </div>
+            </div>
+            <p style="font-size:11px;color:var(--ink-mute);margin-top:14px;line-height:1.45;">O assistente nunca soma moedas diferentes — cada uma fica no seu próprio bolso, do jeito certo.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="grid-2">
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Últimos lançamentos</div>
+              <div class="card-sub">Anotados pelo WhatsApp · automático</div>
+            </div>
+            <a class="card-link">Ver todos →</a>
+          </div>
+          <div>
+            <div class="lanc">
+              <div class="lanc-ico">☕</div>
+              <div><div class="lanc-desc">Café</div><div class="lanc-meta">Alimentação · <span class="src">via WhatsApp</span></div></div>
+              <div class="lanc-val">R$ 7,00</div>
+            </div>
+            <div class="lanc">
+              <div class="lanc-ico">👟</div>
+              <div><div class="lanc-desc">Sapato</div><div class="lanc-meta">Vestuário · <span class="src">via áudio 🎤</span></div></div>
+              <div class="lanc-val">€ 90,00</div>
+            </div>
+            <div class="lanc">
+              <div class="lanc-ico">🛒</div>
+              <div><div class="lanc-desc">Mercado</div><div class="lanc-meta">Alimentação · <span class="src">via WhatsApp</span></div></div>
+              <div class="lanc-val">R$ 120,00</div>
+            </div>
+            <div class="lanc">
+              <div class="lanc-ico">🚗</div>
+              <div><div class="lanc-desc">Uber</div><div class="lanc-meta">Transporte · <span class="src">via WhatsApp</span></div></div>
+              <div class="lanc-val">R$ 18,00</div>
+            </div>
+            <div class="lanc">
+              <div class="lanc-ico">💊</div>
+              <div><div class="lanc-desc">Remédio</div><div class="lanc-meta">Saúde · <span class="src">via WhatsApp</span></div></div>
+              <div class="lanc-val">R$ 45,00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Tarefas & lembretes</div>
+              <div class="card-sub">Você manda, o assistente te avisa</div>
+            </div>
+            <a class="card-link">+ Novo</a>
+          </div>
+          <div>
+            <div class="task">
+              <div class="task-check"></div>
+              <div class="task-txt">Pagar o aluguel</div>
+              <div class="task-when when-soon">hoje 09h</div>
+            </div>
+            <div class="task">
+              <div class="task-check"></div>
+              <div class="task-txt">Ligar pro dentista</div>
+              <div class="task-when when-soon">amanhã 15h</div>
+            </div>
+            <div class="task">
+              <div class="task-check"></div>
+              <div class="task-txt">Renovar o seguro do carro</div>
+              <div class="task-when when-future">28 jun</div>
+            </div>
+            <div class="task done">
+              <div class="task-check done"></div>
+              <div class="task-txt">Transferir pra poupança</div>
+              <div class="task-when when-done">feito</div>
+            </div>
+            <div class="task done">
+              <div class="task-check done"></div>
+              <div class="task-txt">Pagar a fatura do cartão</div>
+              <div class="task-when when-done">feito</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    const icon = document.getElementById('theme-icon');
+    if (next === 'light') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+    try { localStorage.setItem('oaken-theme', next); } catch(e) {}
+  }
+  function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+  try {
+    const saved = localStorage.getItem('oaken-theme');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.getElementById('theme-icon').innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    }
+  } catch(e) {}
+</script>
+
+</body>
+</html>
