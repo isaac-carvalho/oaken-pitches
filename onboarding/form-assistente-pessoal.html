@@ -58,20 +58,21 @@ font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;letter-spacing
 
   <form id="form" onsubmit="return false;">
 <div class="secao">Parte 1 · Você</div>
-<div class="campo"><label for="c0">1. Seu nome e o WhatsApp que vai usar com o assistente</label><input type="text" id="c0" data-q="Seu nome e o WhatsApp que vai usar com o assistente"></div>
-<div class="campo"><label for="c1">2. Em que fuso/país você está?</label><span class="ajuda">Pra os lembretes chegarem no horário certo (Brasil, Portugal, Angola...)</span><input type="text" id="c1" data-q="Em que fuso/país você está"></div>
+<div class="campo"><label for="c0">1. Seu nome</label><input type="text" id="c0" data-q="Seu nome"></div>
+<div class="campo"><label for="c1">2. Seu número de WhatsApp (com DDD e país)</label><span class="ajuda">Ex.: +55 11 99999-9999. IMPORTANTE: é o número onde o seu assistente vai funcionar — é pra ele que você manda os gastos e é nele que chegam os lembretes.</span><input type="text" id="c1" data-q="Seu número de WhatsApp"></div>
+<div class="campo"><label for="c2">3. Em que fuso/país você está?</label><span class="ajuda">Pra os lembretes chegarem no horário certo (Brasil, Portugal, Angola...)</span><input type="text" id="c2" data-q="Em que fuso/país você está"></div>
 <div class="secao">Parte 2 · Suas moedas</div>
-<div class="campo"><label for="c2">3. Em quais moedas você gasta no dia a dia?</label><span class="ajuda">Real (R$), Euro (€), Dólar (US$), Kwanza (Kz)... pode ser mais de uma</span><textarea id="c2" rows="3" data-q="Em quais moedas você gasta no dia a dia"></textarea></div>
-<div class="campo"><label for="c3">4. Qual é a sua moeda principal?</label><span class="ajuda">A que você mais usa — vira o padrão quando você não disser a moeda</span><input type="text" id="c3" data-q="Qual é a sua moeda principal"></div>
+<div class="campo"><label for="c3">4. Em quais moedas você gasta no dia a dia?</label><span class="ajuda">Real (R$), Euro (€), Dólar (US$), Kwanza (Kz)... pode ser mais de uma</span><textarea id="c3" rows="3" data-q="Em quais moedas você gasta no dia a dia"></textarea></div>
+<div class="campo"><label for="c4">5. Qual é a sua moeda principal?</label><span class="ajuda">A que você mais usa — vira o padrão quando você não disser a moeda</span><input type="text" id="c4" data-q="Qual é a sua moeda principal"></div>
 <div class="secao">Parte 3 · O que você quer acompanhar</div>
-<div class="campo"><label for="c4">5. Quais categorias de gasto fazem sentido pra você?</label><span class="ajuda">Já venho com um conjunto pronto: Moradia, Alimentação, Transporte, Saúde, Educação, Lazer, Assinaturas, Compras pessoais, Finanças, Trabalho/Negócio e Outros (pro que não se encaixa). Marque o que usa, tire o que não usa ou crie a sua — é só dizer.</span><textarea id="c4" rows="4" data-q="Quais categorias de gasto fazem sentido pra você"></textarea></div>
-<div class="campo"><label for="c5">6. Você quer uma meta de gasto por mês? De quanto?</label><span class="ajuda">Opcional — se quiser, o assistente te avisa quando estiver chegando perto</span><input type="text" id="c5" data-q="Você quer uma meta de gasto por mês"></div>
+<div class="campo"><label for="c5">6. Quais categorias de gasto fazem sentido pra você?</label><span class="ajuda">Já venho com um conjunto pronto: Moradia, Alimentação, Transporte, Saúde, Educação, Lazer, Assinaturas, Compras pessoais, Finanças, Trabalho/Negócio e Outros (pro que não se encaixa). Marque o que usa, tire o que não usa ou crie a sua — é só dizer.</span><textarea id="c5" rows="4" data-q="Quais categorias de gasto fazem sentido pra você"></textarea></div>
+<div class="campo"><label for="c6">7. Você quer uma meta de gasto por mês? De quanto?</label><span class="ajuda">Opcional — se quiser, o assistente te avisa quando estiver chegando perto</span><input type="text" id="c6" data-q="Você quer uma meta de gasto por mês"></div>
 <div class="secao">Parte 4 · Lembretes e tarefas</div>
-<div class="campo"><label for="c6">7. Quer usar o assistente também pra lembretes de tarefas?</label><span class="ajuda">Ex.: contas a pagar, ligações, compromissos</span><input type="text" id="c6" data-q="Quer usar o assistente também pra lembretes de tarefas"></div>
-<div class="campo"><label for="c7">8. Com quanta antecedência prefere ser avisado?</label><span class="ajuda">Ex.: 10 minutos antes, 1 hora antes, na véspera de manhã</span><input type="text" id="c7" data-q="Com quanta antecedência prefere ser avisado"></div>
+<div class="campo"><label for="c7">8. Quer usar o assistente também pra lembretes de tarefas?</label><span class="ajuda">Ex.: contas a pagar, ligações, compromissos</span><input type="text" id="c7" data-q="Quer usar o assistente também pra lembretes de tarefas"></div>
+<div class="campo"><label for="c8">9. Com quanta antecedência prefere ser avisado?</label><span class="ajuda">Ex.: 10 minutos antes, 1 hora antes, na véspera de manhã</span><input type="text" id="c8" data-q="Com quanta antecedência prefere ser avisado"></div>
 <div class="secao">Parte 5 · Seu jeito</div>
-<div class="campo"><label for="c8">9. Você prefere conversar mais por texto, por áudio, ou os dois?</label><input type="text" id="c8" data-q="Você prefere conversar mais por texto, por áudio, ou os dois"></div>
-<div class="campo"><label for="c9">10. Como você tenta controlar suas finanças hoje?</label><span class="ajuda">Planilha, app, anotações, nada? Isso me ajuda a entender o que estava faltando pra você</span><textarea id="c9" rows="3" data-q="Como você tenta controlar suas finanças hoje"></textarea></div>
+<div class="campo"><label for="c9">10. Você prefere conversar mais por texto, por áudio, ou os dois?</label><input type="text" id="c9" data-q="Você prefere conversar mais por texto, por áudio, ou os dois"></div>
+<div class="campo"><label for="c10">11. Como você tenta controlar suas finanças hoje?</label><span class="ajuda">Planilha, app, anotações, nada? Isso me ajuda a entender o que estava faltando pra você</span><textarea id="c10" rows="3" data-q="Como você tenta controlar suas finanças hoje"></textarea></div>
   </form>
 
   <div class="acoes">
