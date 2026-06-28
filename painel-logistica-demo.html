@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Oaken Entregas (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"]{ --bg:#0a0a0f; --panel:#13131c; --panel-2:#1a1a26; --line:#262633; --line-soft:#1f1f2b; --ink:#e8e8f0; --ink-soft:#a0a0b5; --ink-mute:#6a6a80; --accent:#8b5cf6; --accent-soft:#211a3a; --cyan:#22d3ee; --cyan-soft:#0e2a30; --green:#34d399; --green-soft:#0f2c22; --gold:#fbbf24; --gold-soft:#2c2410; --warn:#fb7185; --warn-soft:#2e1620; --grad:linear-gradient(135deg,#8b5cf6,#22d3ee); --shadow:0 1px 0 rgba(255,255,255,.02),0 8px 24px rgba(0,0,0,.25); }
+  :root[data-theme="light"]{ --bg:#f4f2fb; --panel:#fff; --panel-2:#f0eef9; --line:#e2def0; --line-soft:#ece9f6; --ink:#1a1a2e; --ink-soft:#5a5a7a; --ink-mute:#8a8aa0; --accent:#7c3aed; --accent-soft:#efe9fc; --cyan:#0891b2; --cyan-soft:#e0f4f8; --green:#059669; --green-soft:#e3f5ee; --gold:#d97706; --gold-soft:#fdf2e0; --warn:#e11d48; --warn-soft:#fce8ec; --grad:linear-gradient(135deg,#7c3aed,#0891b2); --shadow:0 1px 0 rgba(0,0,0,.02),0 4px 12px rgba(0,0,0,.05); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink); font-size:13px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+  .app { display:grid; grid-template-columns:232px 1fr; min-height:100vh; }
+  .sidebar { background:var(--panel); border-right:1px solid var(--line); padding:20px 14px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+  .main { display:flex; flex-direction:column; min-width:0; }
+  .topbar { display:flex; align-items:center; gap:16px; padding:14px 24px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10; }
+  .content { padding:24px; flex:1; }
+  .brand { display:flex; align-items:center; gap:10px; padding:4px 8px 20px; border-bottom:1px solid var(--line-soft); margin-bottom:16px; }
+  .brand-mark { width:28px; height:28px; background:var(--grad); border-radius:7px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Fraunces',serif; font-weight:600; font-size:17px; }
+  .brand-name { font-family:'Fraunces',serif; font-weight:600; font-size:16px; letter-spacing:-.01em; }
+  .brand-sub { font-size:10px; color:var(--ink-mute); letter-spacing:.12em; text-transform:uppercase; margin-top:-2px; }
+  .nav-label { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-mute); padding:14px 10px 6px; font-weight:600; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:6px; color:var(--ink-soft); text-decoration:none; font-size:13px; font-weight:500; cursor:pointer; }
+  .nav-item:hover { background:var(--panel-2); color:var(--ink); }
+  .nav-item.active { background:var(--accent-soft); color:var(--accent); font-weight:600; }
+  .nav-item .badge { margin-left:auto; background:var(--warn); color:#fff; font-size:10px; padding:1px 6px; border-radius:8px; font-weight:600; }
+  .nav-icon { width:16px; height:16px; stroke-width:1.7; stroke:currentColor; fill:none; }
+  .breadcrumb { font-size:12px; color:var(--ink-mute); }
+  .breadcrumb strong { color:var(--ink); font-weight:600; }
+  .topbar-spacer { flex:1; }
+  .search { display:flex; align-items:center; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; padding:6px 10px; min-width:240px; gap:8px; }
+  .search input { background:none; border:none; outline:none; color:var(--ink); font-family:inherit; font-size:13px; flex:1; }
+  .search input::placeholder { color:var(--ink-mute); }
+  .icon-btn { width:32px; height:32px; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft); }
+  .icon-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .user-chip { display:flex; align-items:center; gap:10px; padding:4px 10px 4px 4px; border:1px solid var(--line); border-radius:20px; background:var(--panel-2); }
+  .user-avatar { width:26px; height:26px; border-radius:50%; background:var(--grad); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:11px; }
+  .user-name { font-size:12px; font-weight:500; }
+  .page-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+  .page-title { font-family:'Fraunces',serif; font-weight:600; font-size:28px; letter-spacing:-.015em; line-height:1.1; }
+  .page-sub { font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  .live-dot { display:inline-flex; align-items:center; gap:6px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:600; }
+  .live-dot::before { content:''; width:7px; height:7px; background:var(--green); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(52,211,153,.5);} 70%{box-shadow:0 0 0 8px rgba(52,211,153,0);} 100%{box-shadow:0 0 0 0 rgba(52,211,153,0);} }
+  .btn { padding:8px 14px; border-radius:6px; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+  .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; box-shadow:var(--shadow); }
+  .kpi-label { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); font-weight:600; margin-bottom:8px; }
+  .kpi-value { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; letter-spacing:-.02em; color:var(--ink); line-height:1.05; }
+  .kpi-value small { font-size:13px; color:var(--ink-mute); }
+  .kpi-delta { font-size:11px; margin-top:8px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace; }
+  .kpi-delta.up { color:var(--green); } .kpi-delta.down { color:var(--green); } .kpi-delta.warn { color:var(--gold); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:16px; }
+  .grid-2 { display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-bottom:16px; }
+  .card-head { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--line-soft); }
+  .card-title { font-size:13px; font-weight:600; }
+  .card-sub { font-size:11px; color:var(--ink-mute); }
+  .card-link { font-size:11px; color:var(--accent); text-decoration:none; font-weight:600; text-transform:uppercase; letter-spacing:.1em; cursor:pointer; }
+  /* entregas */
+  .ent { display:grid; grid-template-columns:54px 1fr auto; gap:12px; padding:11px 18px; border-bottom:1px solid var(--line-soft); align-items:center; }
+  .ent:last-child { border-bottom:none; }
+  .ent-num { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; color:var(--ink-soft); }
+  .ent-cli { font-size:13px; font-weight:600; }
+  .ent-meta { font-size:10px; color:var(--ink-mute); margin-top:2px; }
+  .ent-right { text-align:right; }
+  .st { font-size:9px; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:4px; font-weight:700; }
+  .st-ent { background:var(--green-soft); color:var(--green); }
+  .st-rota { background:var(--cyan-soft); color:var(--cyan); }
+  .st-prob { background:var(--warn-soft); color:var(--warn); }
+  .cp { font-size:11px; margin-top:4px; display:inline-block; }
+  .cp-ok { color:var(--green); } .cp-no { color:var(--gold); } .cp-na { color:var(--ink-mute); }
+  /* motoristas */
+  .mot { padding:13px 18px; border-bottom:1px solid var(--line-soft); }
+  .mot:last-child { border-bottom:none; }
+  .mot-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+  .mot-name { font-size:13px; font-weight:600; }
+  .mot-stat { font-size:11px; color:var(--ink-mute); font-family:'JetBrains Mono',monospace; }
+  .bar-track { background:var(--panel-2); border-radius:6px; height:9px; overflow:hidden; }
+  .bar { height:100%; border-radius:6px; background:var(--green); }
+  .mtag { font-size:9px; letter-spacing:.05em; text-transform:uppercase; padding:1px 6px; border-radius:3px; font-weight:600; margin-left:6px; }
+  .mtag-warn { background:var(--warn-soft); color:var(--warn); }
+  /* alert list */
+  .al { display:flex; justify-content:space-between; align-items:center; padding:11px 18px; border-bottom:1px solid var(--line-soft); }
+  .al:last-child { border-bottom:none; }
+  .al-main { font-size:12px; font-weight:600; }
+  .al-sub { font-size:10px; color:var(--gold); margin-top:2px; }
+  .al-sub.mute { color:var(--ink-mute); }
+  @media (max-width:1100px){ .kpi-grid{grid-template-columns:repeat(3,1fr);} .grid-2{grid-template-columns:1fr;} }
+  @media (max-width:760px){ .app{grid-template-columns:1fr;} .sidebar{display:none;} .kpi-grid{grid-template-columns:repeat(2,1fr);} .page-title{font-size:22px;} .content{padding:16px;} .search{display:none;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">O</div><div><div class="brand-name">Oaken</div><div class="brand-sub">Entregas</div></div></div>
+    <div class="nav-label">Operação</div>
+    <a class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Visão geral</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7zM5.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM18.5 21a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>Entregas<span class="badge">3</span></a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>Motoristas</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M9 13l2 2 4-4"/></svg>Comprovantes<span class="badge">2</span></a>
+    <div class="nav-label">Análise</div>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 3v18h18M7 16l4-4 3 3 5-6"/></svg>Relatórios</a>
+    <div class="nav-label">Sistema</div>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>Configurações</a>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="breadcrumb">Transrápido Entregas · <strong>Visão geral</strong></div>
+      <div class="topbar-spacer"></div>
+      <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="color:var(--ink-mute)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Buscar entrega, cliente, motorista..."></div>
+      <button class="icon-btn" onclick="tt()" title="Tema"><svg id="ti" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <div class="user-chip"><div class="user-avatar">RT</div><span class="user-name">Rui</span></div>
+    </header>
+    <div class="content">
+      <div class="page-head">
+        <div><h1 class="page-title">Visão geral</h1><div class="page-sub">Hoje · atualizado há 30 segundos</div></div>
+        <div style="display:flex;gap:16px;align-items:center"><span class="live-dot">Agente ativo</span><button class="btn btn-primary">Resumo do dia</button></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Entregas hoje</div><div class="kpi-value">42</div><div class="kpi-delta down">↑ 6 vs ontem</div></div>
+        <div class="kpi"><div class="kpi-label">Entregues</div><div class="kpi-value">36 <small>86%</small></div><div class="kpi-delta down">↑ 4%</div></div>
+        <div class="kpi"><div class="kpi-label">Em rota</div><div class="kpi-value">3</div><div class="kpi-delta">—</div></div>
+        <div class="kpi"><div class="kpi-label">Com problema</div><div class="kpi-value">3</div><div class="kpi-delta down">↓ 1 vs ontem</div></div>
+        <div class="kpi"><div class="kpi-label">Comprovantes faltando</div><div class="kpi-value">2</div><div class="kpi-delta warn">cobrança enviada</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">Entregas de hoje</div><div class="card-sub">Status em tempo real · vindo do WhatsApp</div></div><a class="card-link">Ver todas →</a></div>
+        <div>
+          <div class="ent"><div class="ent-num">#152</div><div><div class="ent-cli">Carlos Lima — Construções</div><div class="ent-meta">Motorista: Carlos · 14:20 · cliente ausente, reagendada amanhã</div></div><div class="ent-right"><span class="st st-prob">Problema</span><div class="cp cp-na">sem comprovante</div></div></div>
+          <div class="ent"><div class="ent-num">#148</div><div><div class="ent-cli">Mercado São João</div><div class="ent-meta">Motorista: Carlos · 13:05</div></div><div class="ent-right"><span class="st st-ent">Entregue</span><div class="cp cp-ok">✓ comprovante</div></div></div>
+          <div class="ent"><div class="ent-num">#151</div><div><div class="ent-cli">Padaria Estrela</div><div class="ent-meta">Motorista: Pedro · saiu 09:10</div></div><div class="ent-right"><span class="st st-rota">Em rota</span><div class="cp cp-na">—</div></div></div>
+          <div class="ent"><div class="ent-num">#150</div><div><div class="ent-cli">Ana Construções</div><div class="ent-meta">Motorista: João · 10:55</div></div><div class="ent-right"><span class="st st-ent">Entregue</span><div class="cp cp-no">⚠ comprovante faltando</div></div></div>
+          <div class="ent"><div class="ent-num">#145</div><div><div class="ent-cli">Farmácia Vida</div><div class="ent-meta">Motorista: João · 11:40</div></div><div class="ent-right"><span class="st st-ent">Entregue</span><div class="cp cp-ok">✓ comprovante</div></div></div>
+          <div class="ent"><div class="ent-num">#149</div><div><div class="ent-cli">Auto Peças Rocha</div><div class="ent-meta">Motorista: Pedro · 10:12</div></div><div class="ent-right"><span class="st st-ent">Entregue</span><div class="cp cp-ok">✓ comprovante</div></div></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Por motorista, hoje</div><div class="card-sub">Entregues / total · problemas</div></div></div>
+          <div>
+            <div class="mot"><div class="mot-top"><span class="mot-name">João Silva</span><span class="mot-stat">15/16 · 1 em rota · 0 problemas</span></div><div class="bar-track"><div class="bar" style="width:94%"></div></div></div>
+            <div class="mot"><div class="mot-top"><span class="mot-name">Carlos Lima <span class="mtag mtag-warn">2 problemas</span></span><span class="mot-stat">11/14 · 1 comprovante faltando</span></div><div class="bar-track"><div class="bar" style="width:78%;background:var(--gold)"></div></div></div>
+            <div class="mot"><div class="mot-top"><span class="mot-name">Pedro Souza</span><span class="mot-stat">10/12 · 1 em rota · 0 problemas</span></div><div class="bar-track"><div class="bar" style="width:83%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">⚠️ Comprovantes faltando</div><div class="card-sub">Cobrança automática ao motorista</div></div></div>
+          <div>
+            <div class="al"><div><div class="al-main">#150 · Ana Construções</div><div class="al-sub mute">entregue 10:55 por João</div></div><div class="al-sub">cobrança enviada 11:30</div></div>
+            <div class="al"><div><div class="al-main">#138 · Lojas Triângulo</div><div class="al-sub mute">entregue ontem 17:40 por Carlos</div></div><div class="al-sub">2 dias sem comprovante</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">Precisa de ação — problemas e reentregas</div><div class="card-sub">Motivo registrado + próxima tentativa</div></div></div>
+        <div>
+          <div class="al"><div><div class="al-main">#152 · Carlos Lima — Construções</div><div class="al-sub mute">Cliente ausente</div></div><div class="al-sub">reentrega amanhã · 1ª da rota</div></div>
+          <div class="al"><div><div class="al-main">#140 · Mercado Bom Preço</div><div class="al-sub mute">Endereço errado</div></div><div class="al-sub">aguardando dono confirmar endereço</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  function tt(){ var h=document.documentElement, n=h.getAttribute('data-theme')==='dark'?'light':'dark'; h.setAttribute('data-theme',n); var i=document.getElementById('ti'); i.innerHTML = n==='light' ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>' : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'; try{localStorage.setItem('oaken-theme',n)}catch(e){} }
+  try{ if(localStorage.getItem('oaken-theme')==='light'){ document.documentElement.setAttribute('data-theme','light'); document.getElementById('ti').innerHTML='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'; } }catch(e){}
+</script>
+</body>
+</html>

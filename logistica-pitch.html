@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA — Gestão de Entregas no WhatsApp (Transportadoras)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f4f1ec; --paper:#fbf9f5; --ink:#1a1a17; --ink-soft:#4a4a44; --line:#d8d3ca; --accent:#1f4d3a; --accent-soft:#e8efe9; --warn:#b8431f; --gold:#b8893f; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Plus Jakarta Sans',system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.55; font-size:16px; -webkit-font-smoothing:antialiased; }
+  .page { max-width:780px; margin:0 auto; padding:48px 32px; background:var(--paper); min-height:100vh; border-left:1px solid var(--line); border-right:1px solid var(--line); }
+  .badge { display:inline-block; font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); padding:6px 12px; border:1px solid var(--accent); border-radius:2px; margin-bottom:28px; }
+  h1 { font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:44px; line-height:1.1; letter-spacing:-.02em; margin-bottom:20px; }
+  h1 em { font-style:italic; color:var(--accent); font-weight:600; }
+  h2 { font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:28px; line-height:1.2; letter-spacing:-.015em; margin:56px 0 20px; }
+  h3 { font-size:17px; font-weight:700; margin-bottom:8px; letter-spacing:-.005em; }
+  p { color:var(--ink-soft); margin-bottom:14px; }
+  p.lead { font-size:19px; line-height:1.5; color:var(--ink); max-width:620px; }
+  .rule { height:1px; background:var(--line); margin:40px 0; border:none; }
+  .rule-thick { height:2px; background:var(--ink); margin:40px 0; border:none; }
+  .chat { background:#e6ddd1; border-radius:14px; padding:18px; margin:24px 0; max-width:430px; }
+  .bubble { background:#fff; border-radius:10px 10px 10px 2px; padding:10px 14px; margin-bottom:8px; font-size:14px; color:var(--ink); box-shadow:0 1px 1px rgba(0,0,0,.06); }
+  .bubble.me { background:#d9f1c9; border-radius:10px 10px 2px 10px; margin-left:auto; max-width:82%; }
+  .bubble .who { display:block; font-size:10px; color:var(--gold); font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-bottom:3px; }
+  .bubble small { color:var(--ink-soft); font-size:11px; }
+  .pain-list { list-style:none; margin:24px 0; }
+  .pain-list li { padding:16px 0 16px 36px; border-bottom:1px solid var(--line); position:relative; color:var(--ink); font-size:16px; }
+  .pain-list li:before { content:"✕"; position:absolute; left:4px; top:16px; color:var(--warn); font-weight:700; }
+  .pain-list li strong { color:var(--warn); }
+  .modules { margin:24px 0; }
+  .module { display:grid; grid-template-columns:48px 1fr; gap:20px; padding:22px 0; border-bottom:1px solid var(--line); align-items:start; }
+  .module-num { font-family:'Fraunces',serif; font-size:28px; color:var(--accent); font-weight:600; line-height:1; padding-top:2px; }
+  .module h3 { margin-bottom:6px; }
+  .module p { margin:0; font-size:15px; }
+  .compare { background:var(--paper); border:1px solid var(--line); border-radius:4px; overflow:hidden; margin:28px 0; }
+  .compare-row { display:grid; grid-template-columns:1fr 150px; padding:14px 20px; border-bottom:1px solid var(--line); align-items:center; font-size:15px; }
+  .compare-row:last-child { border-bottom:none; }
+  .compare-row.head { background:var(--ink); color:var(--paper); font-weight:600; font-size:13px; letter-spacing:.05em; text-transform:uppercase; }
+  .compare-row.head .compare-cost { color:var(--paper); }
+  .compare-cost { text-align:right; font-weight:600; color:var(--warn); font-variant-numeric:tabular-nums; }
+  .compare-row.total { background:var(--accent-soft); font-weight:700; color:var(--ink); }
+  .compare-row.total .compare-cost { color:var(--accent); font-size:17px; }
+  .price-box { border:2px solid var(--ink); padding:36px 32px; margin:40px 0; text-align:center; background:var(--paper); }
+  .price-label { font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+  .price-value { font-family:'Fraunces',serif; font-size:72px; font-weight:600; color:var(--accent); line-height:1; letter-spacing:-.03em; }
+  .price-value sup { font-size:24px; vertical-align:top; margin-right:4px; font-weight:500; }
+  .price-period { font-size:16px; color:var(--ink-soft); margin-top:8px; }
+  .price-alt { font-size:13px; color:var(--ink-soft); margin-top:14px; }
+  .price-alt strong { color:var(--ink); }
+  .price-note { font-size:13px; color:var(--ink-soft); margin-top:14px; font-style:italic; }
+  .guarantee { border-left:4px solid var(--gold); padding:20px 24px; background:#faf6ed; margin:32px 0; }
+  .guarantee h3 { color:var(--gold); margin-bottom:8px; font-size:15px; letter-spacing:.02em; text-transform:uppercase; }
+  .guarantee p { color:var(--ink); margin:0; }
+  .quote { font-family:'Fraunces',serif; font-style:italic; font-size:22px; line-height:1.4; color:var(--ink); padding:24px 0 24px 28px; border-left:3px solid var(--accent); margin:32px 0; }
+  .quote-attr { display:block; font-family:'Plus Jakarta Sans',sans-serif; font-style:normal; font-size:13px; color:var(--ink-soft); margin-top:12px; letter-spacing:.03em; }
+  .steps { counter-reset:step; margin:24px 0; }
+  .step { counter-increment:step; padding:14px 0 14px 44px; position:relative; border-bottom:1px solid var(--line); }
+  .step:before { content:counter(step); position:absolute; left:0; top:14px; width:28px; height:28px; border:1.5px solid var(--ink); border-radius:50%; text-align:center; line-height:25px; font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .step strong { display:block; margin-bottom:2px; }
+  .step span { font-size:14px; color:var(--ink-soft); }
+  .cta-block { background:var(--ink); color:var(--paper); padding:40px 32px; margin:48px -32px -48px; text-align:center; }
+  .cta-block h2 { color:var(--paper); margin-top:0; }
+  .cta-block p { color:#bfbfb8; }
+  .cta-button { display:inline-block; margin-top:20px; padding:14px 32px; background:var(--paper); color:var(--ink); text-decoration:none; font-weight:700; font-size:15px; letter-spacing:.02em; border-radius:2px; }
+  .contact-line { font-size:14px; color:#9a9a93; margin-top:18px; letter-spacing:.02em; }
+  .footer-mark { text-align:center; padding:24px 0 0; font-size:12px; color:var(--ink-soft); letter-spacing:.15em; text-transform:uppercase; }
+  .header-mark { display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:40px; }
+  .brand { font-family:'Fraunces',serif; font-weight:600; font-size:20px; letter-spacing:-.01em; }
+  .brand-tag { font-size:11px; color:var(--ink-soft); letter-spacing:.15em; text-transform:uppercase; }
+  .math-box { background:var(--accent-soft); padding:24px 28px; border-radius:4px; margin:28px 0; }
+  .math-line { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; font-size:15px; border-bottom:1px dashed rgba(31,77,58,.25); }
+  .math-line:last-child { border-bottom:none; padding-top:14px; font-weight:700; font-size:17px; color:var(--accent); }
+  .math-line span:last-child { font-variant-numeric:tabular-nums; }
+  @media (max-width:600px){ .page{padding:32px 20px;} h1{font-size:32px;} h2{font-size:24px;} .price-value{font-size:56px;} .compare-row{grid-template-columns:1fr 110px; padding:12px 14px; font-size:14px;} .cta-block{margin:40px -20px -32px; padding:32px 20px;} }
+  @media print{ body{background:#fff;} .page{border:none; max-width:none; padding:24px 32px;} .cta-block{margin:32px 0 0;} h2{page-break-after:avoid;} .price-box,.compare,.math-box,.guarantee,.chat{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header-mark">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Proposta · Transportadoras · 2026</span>
+  </div>
+
+  <span class="badge">Gestão de entregas no WhatsApp</span>
+
+  <h1>Sua transportadora está queimando diesel e perdendo comprovante — e você <em>só descobre quando o cliente liga reclamando</em>.</h1>
+
+  <p class="lead">Numa transportadora pequena, o dia inteiro é no escuro: você não sabe quais entregas saíram, quais foram feitas, quais deram problema — até o motorista voltar à noite (ou o cliente ligar bravo). Canhoto some, reentrega vira prejuízo silencioso, e o diesel evapora em rota mal feita. A Oaken coloca um assistente no WhatsApp que você e seus motoristas já usam: cada entrega vira um dado no painel, em tempo real, sem app novo, sem planilha.</p>
+
+  <div class="chat">
+    <div class="bubble me">entreguei a 145 da Farmácia Vida, recebido pela balconista <small>· 11:40</small></div>
+    <div class="bubble"><span class="who">Oaken · entregas</span>✅ #145 Farmácia Vida — ENTREGUE · 11:40 · recebido por balconista <small>· 11:40</small></div>
+    <div class="bubble me">📷 (foto do canhoto)</div>
+    <div class="bubble"><span class="who">Oaken · entregas</span>Comprovante anexado à #145 ✅ <small>· 11:41</small></div>
+    <div class="bubble me">a 152 deu problema, cliente ausente, tento amanhã <small>· 14:20</small></div>
+    <div class="bubble"><span class="who">Oaken · alerta</span>⚠️ #152 marcada como PROBLEMA (ausente) e reagendada pra amanhã. Avisei o escritório. <small>· 14:20</small></div>
+  </div>
+
+  <hr class="rule-thick">
+
+  <h2>Os gargalos que comem o lucro na rua</h2>
+
+  <ul class="pain-list">
+    <li><strong>Você não sabe o status das entregas em tempo real.</strong> Fica refém da ligação do motorista ou da reclamação do cliente pra descobrir o que aconteceu.</li>
+    <li><strong>Comprovante e canhoto se perdem.</strong> Foto no rolo da câmera, papel amassado no caminhão — e quando o cliente contesta, você não tem prova de que entregou.</li>
+    <li><strong>Reentrega come seu lucro em silêncio.</strong> Cliente ausente, endereço errado, e ninguém registra o motivo — o mesmo erro se repete na semana seguinte.</li>
+    <li><strong>Diesel desperdiçado com rota ruim.</strong> Sem ordem de parada pensada, o motorista cruza a cidade duas vezes e você paga 20-30% a mais de combustível.</li>
+    <li><strong>Fim de dia é caos de WhatsApp solto.</strong> Dezenas de mensagens, áudios e fotos espalhados — nada vira relatório, nada vira número.</li>
+    <li><strong>Você não consegue cobrar o que não consegue provar.</strong> Entrega sem comprovante organizado é dinheiro parado ou perdido na disputa.</li>
+    <li><strong>Não dá pra comparar motoristas.</strong> Quem entrega mais? Quem tem mais problema? Sem dado, é só achismo.</li>
+  </ul>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA faz pelas suas entregas</h2>
+
+  <p>O motorista fala com o agente como já fala no grupo da empresa — texto, áudio ou foto do canhoto. Cada entrega vira um dado no painel, em tempo real. Sem app pra instalar, sem treinamento.</p>
+
+  <div class="modules">
+    <div class="module"><span class="module-num">01</span><div><h3>Registro de entrega por conversa</h3><p>O motorista manda texto, áudio ou foto do canhoto pelo WhatsApp e a entrega muda de status sozinha — em rota, entregue, problema. Sem app, sem planilha.</p></div></div>
+    <div class="module"><span class="module-num">02</span><div><h3>Painel de entregas em tempo real</h3><p>Tudo do dia numa tela: o que saiu, o que foi entregue, o que deu problema, por motorista. Você acompanha de qualquer lugar.</p></div></div>
+    <div class="module"><span class="module-num">03</span><div><h3>Cofre de comprovantes</h3><p>Toda foto de canhoto fica anexada à entrega certa, organizada por cliente e data. Acabou o "sumiu o comprovante" na hora da disputa.</p></div></div>
+    <div class="module"><span class="module-num">04</span><div><h3>Alertas proativos</h3><p>Deu problema numa entrega? Você recebe na hora. Fim do dia? Resumo automático no seu WhatsApp. Comprovante faltando? O sistema cobra o motorista.</p></div></div>
+    <div class="module"><span class="module-num">05</span><div><h3>Motivo e reentrega registrados</h3><p>Toda falha registra o porquê e já agenda a nova tentativa — pra você atacar a causa, não só apagar incêndio.</p></div></div>
+    <div class="module"><span class="module-num">06</span><div><h3>Otimização de rota (em breve)</h3><p>Quando você quiser, ligamos o módulo que sugere a melhor ordem de paradas pra cortar diesel. Honesto: é uma evolução, não vem no primeiro dia.</p></div></div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Quanto a falta de controle queima por mês</h2>
+
+  <div class="compare">
+    <div class="compare-row head"><span>O que evapora hoje</span><span class="compare-cost">Custo/mês</span></div>
+    <div class="compare-row"><span>Reentregas por falta de controle (combustível + tempo)</span><span class="compare-cost">R$ 900</span></div>
+    <div class="compare-row"><span>Diesel desperdiçado por rota ruim (estimado)</span><span class="compare-cost">R$ 1.200</span></div>
+    <div class="compare-row"><span>Comprovantes perdidos / entregas contestadas</span><span class="compare-cost">R$ 400</span></div>
+    <div class="compare-row"><span>Horas do dono organizando WhatsApp e planilha</span><span class="compare-cost">R$ 500</span></div>
+    <div class="compare-row total"><span>Total queimado por mês</span><span class="compare-cost">~R$ 3.000</span></div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA cobra</h2>
+
+  <div class="price-box">
+    <div class="price-label">Plano base · Tudo incluído</div>
+    <div class="price-value"><sup>R$</sup>197</div>
+    <div class="price-period">por mês · sem fidelidade · até ~3 motoristas</div>
+    <div class="price-alt">Frota maior: <strong>R$ 297</strong> (até 8 motoristas) · <strong>R$ 497</strong> (acima disso)</div>
+    <div class="price-note">Se evitar uma única reentrega por semana, já se pagou.</div>
+  </div>
+
+  <div class="math-box">
+    <div class="math-line"><span>Custo por mês</span><span>R$ 197</span></div>
+    <div class="math-line"><span>Economia potencial (diesel + reentrega + organização)</span><span>+ R$ 2.000</span></div>
+    <div class="math-line"><span>Retorno</span><span>mais de 10× o que custa</span></div>
+  </div>
+
+  <p>O ganho aqui é <strong>controle e não-perder-dinheiro</strong>, não "mais vendas". Recuperar um único comprovante perdido numa disputa já cobre o ano inteiro do sistema.</p>
+
+  <div class="guarantee">
+    <h3>Garantia de 30 dias</h3>
+    <p>Teste 30 dias. Se não te der <strong>mais controle sobre suas entregas</strong>, devolvemos cada centavo — sem perguntas.</p>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Como começar</h2>
+
+  <div class="steps">
+    <div class="step"><strong>Você preenche um formulário rápido</strong><span>Seus motoristas, os status que usa, o horário do resumo do dia.</span></div>
+    <div class="step"><strong>A gente configura e conecta em até 48h</strong><span>O agente entra no WhatsApp que você já usa, sem app novo.</span></div>
+    <div class="step"><strong>Seus motoristas começam a mandar as entregas</strong><span>Texto, áudio ou foto do canhoto — do jeito que já fazem.</span></div>
+    <div class="step"><strong>Você abre o painel</strong><span>E, pela primeira vez, vê tudo acontecendo em tempo real.</span></div>
+  </div>
+
+  <div class="quote">
+    "Você não precisa de um software complicado pra parar de perder dinheiro na rua. Precisa que cada entrega vire um número antes do dia acabar. É isso que a gente faz."
+    <span class="quote-attr">— Isaac · Oaken IA</span>
+  </div>
+
+  <div class="cta-block">
+    <h2>Veja suas entregas em tempo real — ainda hoje</h2>
+    <p>Me chama no WhatsApp e em 48h cada entrega da sua transportadora vira um dado no painel.</p>
+    <a href="https://wa.me/351913388794?text=Ol%C3%A1%2C%20vi%20a%20proposta%20da%20Oaken%20IA%20de%20gest%C3%A3o%20de%20entregas%20e%20quero%20conversar." class="cta-button">Falar no WhatsApp →</a>
+    <div class="contact-line">Isaac · Oaken IA · +351 913 388 794</div>
+  </div>
+
+  <div class="footer-mark">Proposta válida até 30 de Julho de 2026</div>
+
+</div>
+</body>
+</html>

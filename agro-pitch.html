@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA — Custo por Talhão no WhatsApp (Agro)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f4f1ec; --paper:#fbf9f5; --ink:#1a1a17; --ink-soft:#4a4a44; --line:#d8d3ca; --accent:#1f4d3a; --accent-soft:#e8efe9; --warn:#b8431f; --gold:#b8893f; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Plus Jakarta Sans',system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.55; font-size:16px; -webkit-font-smoothing:antialiased; }
+  .page { max-width:780px; margin:0 auto; padding:48px 32px; background:var(--paper); min-height:100vh; border-left:1px solid var(--line); border-right:1px solid var(--line); }
+  .badge { display:inline-block; font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); padding:6px 12px; border:1px solid var(--accent); border-radius:2px; margin-bottom:28px; }
+  h1 { font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:44px; line-height:1.1; letter-spacing:-.02em; margin-bottom:20px; }
+  h1 em { font-style:italic; color:var(--accent); font-weight:600; }
+  h2 { font-family:'Fraunces',Georgia,serif; font-weight:600; font-size:28px; line-height:1.2; letter-spacing:-.015em; margin:56px 0 20px; }
+  h3 { font-size:17px; font-weight:700; margin-bottom:8px; letter-spacing:-.005em; }
+  p { color:var(--ink-soft); margin-bottom:14px; }
+  p.lead { font-size:19px; line-height:1.5; color:var(--ink); max-width:620px; }
+  .rule { height:1px; background:var(--line); margin:40px 0; border:none; }
+  .rule-thick { height:2px; background:var(--ink); margin:40px 0; border:none; }
+  .chat { background:#e6ddd1; border-radius:14px; padding:18px; margin:24px 0; max-width:430px; }
+  .bubble { background:#fff; border-radius:10px 10px 10px 2px; padding:10px 14px; margin-bottom:8px; font-size:14px; color:var(--ink); box-shadow:0 1px 1px rgba(0,0,0,.06); }
+  .bubble.me { background:#d9f1c9; border-radius:10px 10px 2px 10px; margin-left:auto; max-width:82%; }
+  .bubble .who { display:block; font-size:10px; color:var(--gold); font-weight:700; letter-spacing:.06em; text-transform:uppercase; margin-bottom:3px; }
+  .bubble small { color:var(--ink-soft); font-size:11px; }
+  .pain-list { list-style:none; margin:24px 0; }
+  .pain-list li { padding:16px 0 16px 36px; border-bottom:1px solid var(--line); position:relative; color:var(--ink); font-size:16px; }
+  .pain-list li:before { content:"✕"; position:absolute; left:4px; top:16px; color:var(--warn); font-weight:700; }
+  .pain-list li strong { color:var(--warn); }
+  .modules { margin:24px 0; }
+  .module { display:grid; grid-template-columns:48px 1fr; gap:20px; padding:22px 0; border-bottom:1px solid var(--line); align-items:start; }
+  .module-num { font-family:'Fraunces',serif; font-size:28px; color:var(--accent); font-weight:600; line-height:1; padding-top:2px; }
+  .module h3 { margin-bottom:6px; }
+  .module p { margin:0; font-size:15px; }
+  .compare { background:var(--paper); border:1px solid var(--line); border-radius:4px; overflow:hidden; margin:28px 0; }
+  .compare-row { display:grid; grid-template-columns:1fr 150px; padding:14px 20px; border-bottom:1px solid var(--line); align-items:center; font-size:15px; }
+  .compare-row:last-child { border-bottom:none; }
+  .compare-row.head { background:var(--ink); color:var(--paper); font-weight:600; font-size:13px; letter-spacing:.05em; text-transform:uppercase; }
+  .compare-row.head .compare-cost { color:var(--paper); }
+  .compare-cost { text-align:right; font-weight:600; color:var(--warn); font-variant-numeric:tabular-nums; }
+  .compare-row.total { background:var(--accent-soft); font-weight:700; color:var(--ink); }
+  .compare-row.total .compare-cost { color:var(--accent); font-size:17px; }
+  .price-box { border:2px solid var(--ink); padding:36px 32px; margin:40px 0; text-align:center; background:var(--paper); }
+  .price-label { font-size:12px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:8px; }
+  .price-value { font-family:'Fraunces',serif; font-size:72px; font-weight:600; color:var(--accent); line-height:1; letter-spacing:-.03em; }
+  .price-value sup { font-size:24px; vertical-align:top; margin-right:4px; font-weight:500; }
+  .price-period { font-size:16px; color:var(--ink-soft); margin-top:8px; }
+  .price-alt { font-size:13px; color:var(--ink-soft); margin-top:14px; }
+  .price-alt strong { color:var(--ink); }
+  .price-note { font-size:13px; color:var(--ink-soft); margin-top:14px; font-style:italic; }
+  .guarantee { border-left:4px solid var(--gold); padding:20px 24px; background:#faf6ed; margin:32px 0; }
+  .guarantee h3 { color:var(--gold); margin-bottom:8px; font-size:15px; letter-spacing:.02em; text-transform:uppercase; }
+  .guarantee p { color:var(--ink); margin:0; }
+  .quote { font-family:'Fraunces',serif; font-style:italic; font-size:22px; line-height:1.4; color:var(--ink); padding:24px 0 24px 28px; border-left:3px solid var(--accent); margin:32px 0; }
+  .quote-attr { display:block; font-family:'Plus Jakarta Sans',sans-serif; font-style:normal; font-size:13px; color:var(--ink-soft); margin-top:12px; letter-spacing:.03em; }
+  .steps { counter-reset:step; margin:24px 0; }
+  .step { counter-increment:step; padding:14px 0 14px 44px; position:relative; border-bottom:1px solid var(--line); }
+  .step:before { content:counter(step); position:absolute; left:0; top:14px; width:28px; height:28px; border:1.5px solid var(--ink); border-radius:50%; text-align:center; line-height:25px; font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .step strong { display:block; margin-bottom:2px; }
+  .step span { font-size:14px; color:var(--ink-soft); }
+  .cta-block { background:var(--ink); color:var(--paper); padding:40px 32px; margin:48px -32px -48px; text-align:center; }
+  .cta-block h2 { color:var(--paper); margin-top:0; }
+  .cta-block p { color:#bfbfb8; }
+  .cta-button { display:inline-block; margin-top:20px; padding:14px 32px; background:var(--paper); color:var(--ink); text-decoration:none; font-weight:700; font-size:15px; letter-spacing:.02em; border-radius:2px; }
+  .contact-line { font-size:14px; color:#9a9a93; margin-top:18px; letter-spacing:.02em; }
+  .footer-mark { text-align:center; padding:24px 0 0; font-size:12px; color:var(--ink-soft); letter-spacing:.15em; text-transform:uppercase; }
+  .header-mark { display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--line); padding-bottom:20px; margin-bottom:40px; }
+  .brand { font-family:'Fraunces',serif; font-weight:600; font-size:20px; letter-spacing:-.01em; }
+  .brand-tag { font-size:11px; color:var(--ink-soft); letter-spacing:.15em; text-transform:uppercase; }
+  .math-box { background:var(--accent-soft); padding:24px 28px; border-radius:4px; margin:28px 0; }
+  .math-line { display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; font-size:15px; border-bottom:1px dashed rgba(31,77,58,.25); }
+  .math-line:last-child { border-bottom:none; padding-top:14px; font-weight:700; font-size:17px; color:var(--accent); }
+  .math-line span:last-child { font-variant-numeric:tabular-nums; }
+  @media (max-width:600px){ .page{padding:32px 20px;} h1{font-size:32px;} h2{font-size:24px;} .price-value{font-size:56px;} .compare-row{grid-template-columns:1fr 110px; padding:12px 14px; font-size:14px;} .cta-block{margin:40px -20px -32px; padding:32px 20px;} }
+  @media print{ body{background:#fff;} .page{border:none; max-width:none; padding:24px 32px;} .cta-block{margin:32px 0 0;} h2{page-break-after:avoid;} .price-box,.compare,.math-box,.guarantee,.chat{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header-mark">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Proposta · Agro · 2026</span>
+  </div>
+
+  <span class="badge">Custo por talhão no WhatsApp</span>
+
+  <h1>Você sabe quanto custa cada talhão da sua terra? Quem não sabe, <em>planta prejuízo sem perceber</em>.</h1>
+
+  <p class="lead">Todo produtor sabe quanto colheu. Quase nenhum sabe quanto cada talhão custou pra colher. O caderno some, a nota fiscal vira bolo no porta-luvas, e no fim da safra "deu lucro" ou "não deu" — mas você não sabe de qual pedaço da terra veio o lucro e de qual veio o buraco. O agente da Oaken vira o seu caderno de campo que fala: você manda um áudio do trator, ele anota tudo por talhão, e no fim você enxerga qual terra te paga e qual te custa.</p>
+
+  <div class="chat">
+    <div class="bubble me">🎤 áudio: "apliquei defensivo no talhão 3, 200 reais" <small>· 07:40</small></div>
+    <div class="bubble"><span class="who">Oaken · campo</span>Anotado ✅ T3 · Defensivo · R$ 200 📊 T3 já está em R$ 8.900 nesta safra <small>· 07:40</small></div>
+    <div class="bubble me">🎤 áudio: "colhi 320 sacas no talhão 5" <small>· 16:10</small></div>
+    <div class="bubble"><span class="who">Oaken · campo</span>Registrado ✅ T5: 320 sc · margem estimada +R$ 1.210/ha 🟢 <small>· 16:10</small></div>
+  </div>
+
+  <hr class="rule-thick">
+
+  <h2>Por que o lucro da safra se esconde</h2>
+
+  <ul class="pain-list">
+    <li><strong>Você não sabe o custo por talhão.</strong> No fim da safra tudo vira um número só — e o talhão que dá prejuízo se esconde dentro da média.</li>
+    <li><strong>O caderno de campo não é preenchido.</strong> Anotar à mão depois de 10 horas no sol não acontece; a informação se perde no mesmo dia.</li>
+    <li><strong>A nota fiscal vira pilha.</strong> Adubo, defensivo, diesel, semente: chega tudo, ninguém soma, e o custo real do insumo é uma surpresa em maio.</li>
+    <li><strong>Você perde a janela de manejo.</strong> A adubação de cobertura, a aplicação no tempo certo — sem lembrete, a janela passa e a produtividade cai.</li>
+    <li><strong>Não dá pra comparar safra com safra.</strong> Sem registro organizado, você não sabe se este ano foi melhor que o passado, nem por quê.</li>
+    <li><strong>A decisão de plantio é no "achismo".</strong> Repete-se o mesmo talhão com a mesma cultura sem dado de margem — às vezes plantando de novo o que deu prejuízo.</li>
+    <li><strong>O dinheiro vaza no diesel e na máquina e ninguém vê.</strong> Custo de operação some no caixa geral em vez de entrar no custo da terra.</li>
+  </ul>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA faz pela sua lavoura</h2>
+
+  <p>Você manda um áudio do trator, do curral ou da beira do talhão — e o agente organiza tudo por talhão e por safra. Sem app, sem planilha, sem digitar depois de um dia inteiro de sol.</p>
+
+  <div class="modules">
+    <div class="module"><span class="module-num">01</span><div><h3>Caderno de campo por voz</h3><p>Mande um áudio — "apliquei defensivo no talhão 3, 200" — e vira lançamento organizado por talhão e safra. Sem app, sem planilha, sem digitar.</p></div></div>
+    <div class="module"><span class="module-num">02</span><div><h3>Custo por talhão automático</h3><p>Cada insumo, cada operação, cada nota cai no talhão certo. A qualquer momento você pergunta "quanto gastei no talhão 3?" e recebe a resposta na hora.</p></div></div>
+    <div class="module"><span class="module-num">03</span><div><h3>Margem por talhão na colheita</h3><p>Você registra a produção ("colhi 320 sacas no talhão 5") e o agente cruza com o custo: enfim você vê qual terra te paga e qual te custa.</p></div></div>
+    <div class="module"><span class="module-num">04</span><div><h3>Lembretes de manejo</h3><p>O agente acompanha os dias desde o plantio e te avisa das janelas de manejo, pra você não perder o tempo certo da lavoura. (Lembrete, não recomendação técnica.)</p></div></div>
+    <div class="module"><span class="module-num">05</span><div><h3>Fechamento de safra em 1 tela</h3><p>Custo total, custo por hectare, talhão mais caro, talhão mais rentável — o raio-X da safra sem você montar planilha nenhuma.</p></div></div>
+    <div class="module"><span class="module-num">06</span><div><h3>Resumo semanal no WhatsApp</h3><p>Toda semana um resumo do que entrou de custo, sem você abrir nada. (Alertas de clima e preço de mercado estão no roteiro — Fase 2.)</p></div></div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Quanto custa organizar isso "na mão"</h2>
+
+  <div class="compare">
+    <div class="compare-row head"><span>Do jeito tradicional</span><span class="compare-cost">Custo/mês</span></div>
+    <div class="compare-row"><span>Agrônomo/consultoria pra organizar custos (1 visita/mês)</span><span class="compare-cost">R$ 400</span></div>
+    <div class="compare-row"><span>Horas perdidas montando planilha e somando nota</span><span class="compare-cost">R$ 200</span></div>
+    <div class="compare-row"><span>Prejuízo médio de UM talhão mal decidido (diluído no ano)</span><span class="compare-cost">R$ 600</span></div>
+    <div class="compare-row total"><span>Total mensal</span><span class="compare-cost">~R$ 1.200</span></div>
+  </div>
+
+  <p>E ainda assim sem o dado na mão na hora de decidir o que plantar.</p>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA cobra</h2>
+
+  <div class="price-box">
+    <div class="price-label">Plano por propriedade · Tudo incluído</div>
+    <div class="price-value"><sup>R$</sup>149</div>
+    <div class="price-period">por mês · sem fidelidade · até ~10 talhões</div>
+    <div class="price-alt">Mais de 10 talhões: <strong>R$ 249/mês</strong></div>
+    <div class="price-note">R$ 4,97 por dia — menos que um litro e meio de diesel.</div>
+  </div>
+
+  <div class="math-box">
+    <div class="math-line"><span>Custo no ano</span><span>R$ 1.788</span></div>
+    <div class="math-line"><span>Achar UM talhão de prejuízo e parar de plantá-lo</span><span>R$ 5 a 30 mil/safra</span></div>
+    <div class="math-line"><span>Retorno de uma decisão só</span><span>3× a 15×</span></div>
+  </div>
+
+  <p>O retorno aqui não é economizar tempo — é <strong>parar de plantar prejuízo</strong>. Uma saca a mais por hectare, ou uma decisão de plantio corrigida, já cobre o ano inteiro do sistema.</p>
+
+  <div class="guarantee">
+    <h3>Garantia de 30 dias</h3>
+    <p>Use por 30 dias. Se não enxergar o <strong>custo da sua terra mais claro</strong> do que enxerga hoje, devolvemos 100% — sem pergunta.</p>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Como começar</h2>
+
+  <div class="steps">
+    <div class="step"><strong>Responda um formulário rápido</strong><span>Seus talhões, suas culturas, sua safra.</span></div>
+    <div class="step"><strong>A gente configura o agente com a sua propriedade</strong><span>Em até 48h, com os nomes dos seus talhões do jeito que você fala.</span></div>
+    <div class="step"><strong>Salve o número e mande o primeiro áudio do campo</strong><span>"Apliquei tal coisa, tanto, talhão X" — e pronto, já está no controle.</span></div>
+    <div class="step"><strong>Receba o primeiro resumo no fim da semana</strong><span>E nunca mais perca o custo da sua terra.</span></div>
+  </div>
+
+  <div class="quote">
+    "Você já trabalha duro demais pra plantar no escuro. A gente só acende a luz no custo da sua terra."
+    <span class="quote-attr">— Isaac · Oaken IA</span>
+  </div>
+
+  <div class="cta-block">
+    <h2>Descubra qual talhão te paga e qual te custa</h2>
+    <p>Me chama no WhatsApp e em 48h o seu caderno de campo passa a falar.</p>
+    <a href="https://wa.me/351913388794?text=Ol%C3%A1%2C%20vi%20a%20proposta%20da%20Oaken%20IA%20de%20custo%20por%20talh%C3%A3o%20e%20quero%20conversar." class="cta-button">Falar no WhatsApp →</a>
+    <div class="contact-line">Isaac · Oaken IA · +351 913 388 794</div>
+  </div>
+
+  <div class="footer-mark">Proposta válida até 30 de Julho de 2026</div>
+
+</div>
+</body>
+</html>

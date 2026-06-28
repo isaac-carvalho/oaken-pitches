@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Oaken Jurídico (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"]{ --bg:#0a0a0f; --panel:#13131c; --panel-2:#1a1a26; --line:#262633; --line-soft:#1f1f2b; --ink:#e8e8f0; --ink-soft:#a0a0b5; --ink-mute:#6a6a80; --accent:#8b5cf6; --accent-soft:#211a3a; --cyan:#22d3ee; --cyan-soft:#0e2a30; --green:#34d399; --green-soft:#0f2c22; --gold:#fbbf24; --gold-soft:#2c2410; --orange:#fb923c; --orange-soft:#2c1d12; --warn:#fb7185; --warn-soft:#2e1620; --grad:linear-gradient(135deg,#8b5cf6,#22d3ee); --shadow:0 1px 0 rgba(255,255,255,.02),0 8px 24px rgba(0,0,0,.25); }
+  :root[data-theme="light"]{ --bg:#f4f2fb; --panel:#fff; --panel-2:#f0eef9; --line:#e2def0; --line-soft:#ece9f6; --ink:#1a1a2e; --ink-soft:#5a5a7a; --ink-mute:#8a8aa0; --accent:#7c3aed; --accent-soft:#efe9fc; --cyan:#0891b2; --cyan-soft:#e0f4f8; --green:#059669; --green-soft:#e3f5ee; --gold:#d97706; --gold-soft:#fdf2e0; --orange:#ea580c; --orange-soft:#fdebdc; --warn:#e11d48; --warn-soft:#fce8ec; --grad:linear-gradient(135deg,#7c3aed,#0891b2); --shadow:0 1px 0 rgba(0,0,0,.02),0 4px 12px rgba(0,0,0,.05); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink); font-size:13px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+  .app { display:grid; grid-template-columns:232px 1fr; min-height:100vh; }
+  .sidebar { background:var(--panel); border-right:1px solid var(--line); padding:20px 14px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+  .main { display:flex; flex-direction:column; min-width:0; }
+  .topbar { display:flex; align-items:center; gap:16px; padding:14px 24px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10; }
+  .content { padding:24px; flex:1; }
+  .brand { display:flex; align-items:center; gap:10px; padding:4px 8px 20px; border-bottom:1px solid var(--line-soft); margin-bottom:16px; }
+  .brand-mark { width:28px; height:28px; background:var(--grad); border-radius:7px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Fraunces',serif; font-weight:600; font-size:17px; }
+  .brand-name { font-family:'Fraunces',serif; font-weight:600; font-size:16px; letter-spacing:-.01em; }
+  .brand-sub { font-size:10px; color:var(--ink-mute); letter-spacing:.12em; text-transform:uppercase; margin-top:-2px; }
+  .nav-label { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-mute); padding:14px 10px 6px; font-weight:600; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:6px; color:var(--ink-soft); text-decoration:none; font-size:13px; font-weight:500; cursor:pointer; }
+  .nav-item:hover { background:var(--panel-2); color:var(--ink); }
+  .nav-item.active { background:var(--accent-soft); color:var(--accent); font-weight:600; }
+  .nav-item .badge { margin-left:auto; background:var(--warn); color:#fff; font-size:10px; padding:1px 6px; border-radius:8px; font-weight:600; }
+  .nav-icon { width:16px; height:16px; stroke-width:1.7; stroke:currentColor; fill:none; }
+  .breadcrumb { font-size:12px; color:var(--ink-mute); }
+  .breadcrumb strong { color:var(--ink); font-weight:600; }
+  .topbar-spacer { flex:1; }
+  .search { display:flex; align-items:center; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; padding:6px 10px; min-width:240px; gap:8px; }
+  .search input { background:none; border:none; outline:none; color:var(--ink); font-family:inherit; font-size:13px; flex:1; }
+  .search input::placeholder { color:var(--ink-mute); }
+  .icon-btn { width:32px; height:32px; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft); }
+  .icon-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .user-chip { display:flex; align-items:center; gap:10px; padding:4px 10px 4px 4px; border:1px solid var(--line); border-radius:20px; background:var(--panel-2); }
+  .user-avatar { width:26px; height:26px; border-radius:50%; background:var(--grad); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:11px; }
+  .user-name { font-size:12px; font-weight:500; }
+  .page-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+  .page-title { font-family:'Fraunces',serif; font-weight:600; font-size:28px; letter-spacing:-.015em; line-height:1.1; }
+  .page-sub { font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  .live-dot { display:inline-flex; align-items:center; gap:6px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:600; }
+  .live-dot::before { content:''; width:7px; height:7px; background:var(--green); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(52,211,153,.5);} 70%{box-shadow:0 0 0 8px rgba(52,211,153,0);} 100%{box-shadow:0 0 0 0 rgba(52,211,153,0);} }
+  .btn { padding:8px 14px; border-radius:6px; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+  .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; box-shadow:var(--shadow); }
+  .kpi-label { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); font-weight:600; margin-bottom:8px; }
+  .kpi-value { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:600; letter-spacing:-.02em; color:var(--ink); line-height:1.05; }
+  .kpi-value small { font-size:12px; color:var(--ink-mute); }
+  .kpi-delta { font-size:11px; margin-top:8px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace; }
+  .kpi-delta.up { color:var(--green); } .kpi-delta.warn { color:var(--warn); } .kpi-delta.info { color:var(--cyan); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:16px; }
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  .card-head { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--line-soft); }
+  .card-title { font-size:13px; font-weight:600; }
+  .card-sub { font-size:11px; color:var(--ink-mute); }
+  .card-link { font-size:11px; color:var(--accent); text-decoration:none; font-weight:600; text-transform:uppercase; letter-spacing:.1em; cursor:pointer; }
+  .card-body { padding:14px 18px; }
+  /* prazos */
+  .prazo { display:grid; grid-template-columns:14px 1fr auto; gap:12px; padding:11px 18px; border-bottom:1px solid var(--line-soft); align-items:center; }
+  .prazo:last-child { border-bottom:none; }
+  .dot { width:10px; height:10px; border-radius:50%; }
+  .d-r { background:var(--warn); } .d-o { background:var(--orange); } .d-y { background:var(--gold); } .d-g { background:var(--green); }
+  .prazo-main { font-size:12px; font-weight:600; }
+  .prazo-sub { font-size:10px; color:var(--ink-mute); margin-top:2px; }
+  .prazo-when { font-size:11px; font-family:'JetBrains Mono',monospace; font-weight:600; text-align:right; }
+  .when-r { color:var(--warn); } .when-o { color:var(--orange); }
+  /* rascunhos */
+  .rasc { padding:13px 18px; border-bottom:1px solid var(--line-soft); }
+  .rasc:last-child { border-bottom:none; }
+  .rasc-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+  .rasc-tit { font-size:13px; font-weight:600; }
+  .rasc-meta { font-size:10px; color:var(--ink-mute); margin-top:3px; }
+  .selo { font-size:8px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#fff; background:var(--warn); padding:2px 6px; border-radius:3px; white-space:nowrap; }
+  .rasc-btn { margin-top:8px; font-size:11px; font-weight:600; color:var(--accent); cursor:pointer; }
+  /* table casos */
+  .table { width:100%; border-collapse:collapse; }
+  .table th,.table td { padding:11px 18px; text-align:left; border-bottom:1px solid var(--line-soft); font-size:12px; }
+  .table th { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); font-weight:600; background:var(--panel-2); }
+  .stat { font-size:9px; letter-spacing:.04em; text-transform:uppercase; padding:2px 7px; border-radius:3px; font-weight:600; }
+  .stat-a { background:var(--gold-soft); color:var(--gold); } .stat-b { background:var(--cyan-soft); color:var(--cyan); } .stat-c { background:var(--accent-soft); color:var(--accent); }
+  /* intake */
+  .doc { display:flex; align-items:center; gap:10px; padding:9px 18px; border-bottom:1px solid var(--line-soft); font-size:12px; }
+  .doc:last-child { border-bottom:none; }
+  .doc-ic { font-size:14px; }
+  .doc-main { flex:1; font-weight:500; }
+  .doc-cli { color:var(--ink-mute); font-size:11px; }
+  .doc-st { font-size:10px; font-weight:600; }
+  .ds-ok { color:var(--green); } .ds-wait { color:var(--gold); } .ds-no { color:var(--warn); }
+  .orgbar { padding:12px 18px; font-size:11px; color:var(--ink-mute); border-top:1px solid var(--line-soft); }
+  @media (max-width:1100px){ .kpi-grid{grid-template-columns:repeat(3,1fr);} .grid-2{grid-template-columns:1fr;} }
+  @media (max-width:760px){ .app{grid-template-columns:1fr;} .sidebar{display:none;} .kpi-grid{grid-template-columns:repeat(2,1fr);} .page-title{font-size:22px;} .content{padding:16px;} .search{display:none;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">O</div><div><div class="brand-name">Oaken</div><div class="brand-sub">Jurídico</div></div></div>
+    <div class="nav-label">Escritório</div>
+    <a class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Visão geral</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h18"/></svg>Casos</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Prazos<span class="badge">2</span></a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/></svg>Minutas<span class="badge">3</span></a>
+    <div class="nav-label">Produção</div>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>Modelos do escritório</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Intake</a>
+    <div class="nav-label">Sistema</div>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>Configurações</a>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="breadcrumb">Advocacia Brito & Associados · <strong>Visão geral</strong></div>
+      <div class="topbar-spacer"></div>
+      <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="color:var(--ink-mute)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Buscar caso, cliente, prazo..."></div>
+      <button class="icon-btn" onclick="tt()" title="Tema"><svg id="ti" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <div class="user-chip"><div class="user-avatar">DB</div><span class="user-name">Dra. Brito</span></div>
+    </header>
+    <div class="content">
+      <div class="page-head">
+        <div><h1 class="page-title">Visão geral</h1><div class="page-sub">27 casos ativos · atualizado há 5 minutos</div></div>
+        <div style="display:flex;gap:16px;align-items:center"><span class="live-dot">Agente ativo</span><button class="btn btn-primary">+ Novo caso</button></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Casos ativos</div><div class="kpi-value">27</div><div class="kpi-delta info">+4 no mês</div></div>
+        <div class="kpi"><div class="kpi-label">Prazos esta semana</div><div class="kpi-value">6</div><div class="kpi-delta warn">2 urgentes</div></div>
+        <div class="kpi"><div class="kpi-label">Rascunhos p/ revisar</div><div class="kpi-value">3</div><div class="kpi-delta">aguardando você</div></div>
+        <div class="kpi"><div class="kpi-label">Horas economizadas</div><div class="kpi-value">38h</div><div class="kpi-delta up">▲ 12% no mês</div></div>
+        <div class="kpi"><div class="kpi-label">Docs organizados</div><div class="kpi-value">84</div><div class="kpi-delta info">+19</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Prazos &amp; Audiências</div><div class="card-sub">Ordenado por urgência · cadastrado por você</div></div><a class="card-link">Ver agenda →</a></div>
+          <div>
+            <div class="prazo"><span class="dot d-r"></span><div><div class="prazo-main">Contestação · João da Silva × Transportadora XYZ</div><div class="prazo-sub">Trabalhista</div></div><div class="prazo-when when-r">HOJE 18h</div></div>
+            <div class="prazo"><span class="dot d-o"></span><div><div class="prazo-main">Audiência de instrução · Marcos Pereira × Construtora Alfa</div><div class="prazo-sub">Fórum Trabalhista</div></div><div class="prazo-when when-o">01/07 10h</div></div>
+            <div class="prazo"><span class="dot d-y"></span><div><div class="prazo-main">Réplica · Ana Beatriz × Plano de Saúde Vida+</div><div class="prazo-sub">Cível</div></div><div class="prazo-when">04/07</div></div>
+            <div class="prazo"><span class="dot d-g"></span><div><div class="prazo-main">Recurso ordinário · Lucas Martins</div><div class="prazo-sub">Trabalhista</div></div><div class="prazo-when">10/07</div></div>
+            <div class="prazo"><span class="dot d-g"></span><div><div class="prazo-main">Prazo p/ documentos · Helena Souza</div><div class="prazo-sub">Família</div></div><div class="prazo-when">13/07</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Rascunhos aguardando sua revisão</div><div class="card-sub">Gerados dos seus modelos</div></div></div>
+          <div>
+            <div class="rasc"><div class="rasc-top"><div><div class="rasc-tit">Petição Inicial — Reclamatória Trabalhista</div><div class="rasc-meta">Caso João da Silva · modelo "Inicial Trabalhista v3" · há 2h</div></div><span class="selo">⚠ Revisão obrigatória</span></div><div class="rasc-btn">Revisar →</div></div>
+            <div class="rasc"><div class="rasc-top"><div><div class="rasc-tit">Contestação</div><div class="rasc-meta">Ana Beatriz × Plano de Saúde Vida+ · modelo "Contestação Cível" · há 5h</div></div><span class="selo">⚠ Revisão obrigatória</span></div><div class="rasc-btn">Revisar →</div></div>
+            <div class="rasc"><div class="rasc-top"><div><div class="rasc-tit">Contrato de Honorários</div><div class="rasc-meta">Caso Helena Souza · modelo "Contrato Família" · ontem</div></div><span class="selo">⚠ Revisão obrigatória</span></div><div class="rasc-btn">Revisar →</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">Casos recentes</div><div class="card-sub">Cada caso com timeline, documentos e prazos</div></div><a class="card-link">Ver todos →</a></div>
+        <table class="table">
+          <thead><tr><th>Cliente</th><th>Parte contrária</th><th>Área</th><th>Status</th><th>Atualização</th></tr></thead>
+          <tbody>
+            <tr><td><strong>João da Silva</strong></td><td>Transportadora XYZ</td><td>Trabalhista</td><td><span class="stat stat-a">Aguardando contestação</span></td><td>hoje</td></tr>
+            <tr><td><strong>Marcos Pereira</strong></td><td>Construtora Alfa</td><td>Trabalhista</td><td><span class="stat stat-b">Audiência marcada</span></td><td>ontem</td></tr>
+            <tr><td><strong>Ana Beatriz</strong></td><td>Plano de Saúde Vida+</td><td>Cível</td><td><span class="stat stat-a">Réplica pendente</span></td><td>2 dias</td></tr>
+            <tr><td><strong>Helena Souza</strong></td><td>—</td><td>Família</td><td><span class="stat stat-c">Intake / documentos</span></td><td>3 dias</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">Intake recente do WhatsApp</div><div class="card-sub">Documentos classificados e arquivados por caso</div></div></div>
+        <div>
+          <div class="doc"><span class="doc-ic">✅</span><span class="doc-main">CTPS <span class="doc-cli">· João da Silva</span></span><span class="doc-st ds-ok">arquivado (Trabalhista)</span></div>
+          <div class="doc"><span class="doc-ic">✅</span><span class="doc-main">Holerite (3 arquivos) <span class="doc-cli">· João da Silva</span></span><span class="doc-st ds-ok">arquivado</span></div>
+          <div class="doc"><span class="doc-ic">✅</span><span class="doc-main">Contrato de trabalho <span class="doc-cli">· Marcos Pereira</span></span><span class="doc-st ds-ok">arquivado</span></div>
+          <div class="doc"><span class="doc-ic">⏳</span><span class="doc-main">Procuração <span class="doc-cli">· Ana Beatriz</span></span><span class="doc-st ds-wait">aguardando assinatura</span></div>
+          <div class="doc"><span class="doc-ic">🔴</span><span class="doc-main">Comprovante de residência <span class="doc-cli">· Helena Souza</span></span><span class="doc-st ds-no">pendente — 5 dias</span></div>
+          <div class="orgbar">📊 No mês: 84 documentos recebidos · 79 classificados automaticamente · 5 pendentes <strong>(94%)</strong></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  function tt(){ var h=document.documentElement, n=h.getAttribute('data-theme')==='dark'?'light':'dark'; h.setAttribute('data-theme',n); var i=document.getElementById('ti'); i.innerHTML = n==='light' ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>' : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'; try{localStorage.setItem('oaken-theme',n)}catch(e){} }
+  try{ if(localStorage.getItem('oaken-theme')==='light'){ document.documentElement.setAttribute('data-theme','light'); document.getElementById('ti').innerHTML='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'; } }catch(e){}
+</script>
+</body>
+</html>
