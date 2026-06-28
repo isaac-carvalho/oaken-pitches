@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Controle de Obra (Demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"]{ --bg:#0a0a0f; --panel:#13131c; --panel-2:#1a1a26; --line:#262633; --line-soft:#1f1f2b; --ink:#e8e8f0; --ink-soft:#a0a0b5; --ink-mute:#6a6a80; --accent:#8b5cf6; --accent-soft:#211a3a; --cyan:#22d3ee; --green:#34d399; --green-soft:#0f2c22; --gold:#fbbf24; --gold-soft:#2c2410; --warn:#fb7185; --warn-soft:#2e1620; --grad:linear-gradient(135deg,#8b5cf6,#22d3ee); --shadow:0 1px 0 rgba(255,255,255,.02),0 8px 24px rgba(0,0,0,.25); }
+  :root[data-theme="light"]{ --bg:#f4f2fb; --panel:#fff; --panel-2:#f0eef9; --line:#e2def0; --line-soft:#ece9f6; --ink:#1a1a2e; --ink-soft:#5a5a7a; --ink-mute:#8a8aa0; --accent:#7c3aed; --accent-soft:#efe9fc; --cyan:#0891b2; --green:#059669; --green-soft:#e3f5ee; --gold:#d97706; --gold-soft:#fdf2e0; --warn:#e11d48; --warn-soft:#fce8ec; --grad:linear-gradient(135deg,#7c3aed,#0891b2); --shadow:0 1px 0 rgba(0,0,0,.02),0 4px 12px rgba(0,0,0,.05); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { height:100%; }
+  body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink); font-size:13px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .mono { font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; }
+  .app { display:grid; grid-template-columns:232px 1fr; min-height:100vh; }
+  .sidebar { background:var(--panel); border-right:1px solid var(--line); padding:20px 14px; position:sticky; top:0; height:100vh; overflow-y:auto; }
+  .main { display:flex; flex-direction:column; min-width:0; }
+  .topbar { display:flex; align-items:center; gap:16px; padding:14px 24px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:10; }
+  .content { padding:24px; flex:1; }
+  .brand { display:flex; align-items:center; gap:10px; padding:4px 8px 20px; border-bottom:1px solid var(--line-soft); margin-bottom:16px; }
+  .brand-mark { width:28px; height:28px; background:var(--grad); border-radius:7px; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Fraunces',serif; font-weight:600; font-size:17px; }
+  .brand-name { font-family:'Fraunces',serif; font-weight:600; font-size:16px; letter-spacing:-.01em; }
+  .brand-sub { font-size:10px; color:var(--ink-mute); letter-spacing:.12em; text-transform:uppercase; margin-top:-2px; }
+  .nav-label { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-mute); padding:14px 10px 6px; font-weight:600; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:6px; color:var(--ink-soft); text-decoration:none; font-size:13px; font-weight:500; cursor:pointer; transition:background .1s,color .1s; }
+  .nav-item:hover { background:var(--panel-2); color:var(--ink); }
+  .nav-item.active { background:var(--accent-soft); color:var(--accent); font-weight:600; }
+  .nav-item .badge { margin-left:auto; background:var(--warn); color:#fff; font-size:10px; padding:1px 6px; border-radius:8px; font-weight:600; }
+  .nav-icon { width:16px; height:16px; stroke-width:1.7; stroke:currentColor; fill:none; }
+  .breadcrumb { font-size:12px; color:var(--ink-mute); }
+  .breadcrumb strong { color:var(--ink); font-weight:600; }
+  .topbar-spacer { flex:1; }
+  .search { display:flex; align-items:center; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; padding:6px 10px; min-width:240px; gap:8px; }
+  .search input { background:none; border:none; outline:none; color:var(--ink); font-family:inherit; font-size:13px; flex:1; }
+  .search input::placeholder { color:var(--ink-mute); }
+  .icon-btn { width:32px; height:32px; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink-soft); }
+  .icon-btn svg { width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.8; }
+  .user-chip { display:flex; align-items:center; gap:10px; padding:4px 10px 4px 4px; border:1px solid var(--line); border-radius:20px; background:var(--panel-2); }
+  .user-avatar { width:26px; height:26px; border-radius:50%; background:var(--grad); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:11px; }
+  .user-name { font-size:12px; font-weight:500; }
+  .page-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+  .page-title { font-family:'Fraunces',serif; font-weight:600; font-size:28px; letter-spacing:-.015em; line-height:1.1; }
+  .page-sub { font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  .live-dot { display:inline-flex; align-items:center; gap:6px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--green); font-weight:600; }
+  .live-dot::before { content:''; width:7px; height:7px; background:var(--green); border-radius:50%; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(52,211,153,.5);} 70%{box-shadow:0 0 0 8px rgba(52,211,153,0);} 100%{box-shadow:0 0 0 0 rgba(52,211,153,0);} }
+  .btn { padding:8px 14px; border-radius:6px; border:1px solid var(--line); background:var(--panel); color:var(--ink); font-family:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+  .btn-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:16px; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; box-shadow:var(--shadow); }
+  .kpi-label { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); font-weight:600; margin-bottom:8px; }
+  .kpi-value { font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:600; letter-spacing:-.02em; color:var(--ink); line-height:1.05; }
+  .kpi-value small { font-size:13px; color:var(--ink-mute); }
+  .kpi-delta { font-size:11px; margin-top:8px; color:var(--ink-soft); font-family:'JetBrains Mono',monospace; }
+  .kpi-delta.up { color:var(--warn); } .kpi-delta.warn { color:var(--gold); } .kpi-delta.info { color:var(--cyan); }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:16px; }
+  .grid-2 { display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-bottom:16px; }
+  .card-head { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--line-soft); }
+  .card-title { font-size:13px; font-weight:600; }
+  .card-sub { font-size:11px; color:var(--ink-mute); }
+  .card-link { font-size:11px; color:var(--accent); text-decoration:none; font-weight:600; text-transform:uppercase; letter-spacing:.1em; cursor:pointer; }
+  .card-body { padding:16px 18px; }
+  /* obras: barras de progresso */
+  .obra { padding:13px 0; border-bottom:1px solid var(--line-soft); }
+  .obra:last-child { border-bottom:none; }
+  .obra-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+  .obra-name { font-size:13px; font-weight:600; }
+  .obra-etapa { font-size:11px; color:var(--ink-mute); margin-left:8px; font-weight:400; }
+  .obra-val { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; }
+  .obra-val .of { color:var(--ink-mute); font-weight:400; }
+  .bar-track { background:var(--panel-2); border-radius:6px; height:10px; overflow:hidden; position:relative; }
+  .bar { height:100%; border-radius:6px; }
+  .tag { font-size:9px; letter-spacing:.06em; text-transform:uppercase; padding:2px 7px; border-radius:3px; font-weight:600; margin-left:8px; }
+  .tag-warn { background:var(--gold-soft); color:var(--gold); }
+  .tag-red { background:var(--warn-soft); color:var(--warn); }
+  /* timeline lançamentos */
+  .tl-item { display:grid; grid-template-columns:48px 1fr auto; gap:12px; padding:11px 18px; border-bottom:1px solid var(--line-soft); align-items:center; }
+  .tl-item:last-child { border-bottom:none; }
+  .tl-time { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--ink); font-weight:600; }
+  .tl-desc { font-size:12px; font-weight:600; }
+  .tl-meta { font-size:10px; color:var(--ink-mute); margin-top:2px; }
+  .tl-val { text-align:right; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; }
+  .tl-val.in { color:var(--green); }
+  .tg { font-size:9px; letter-spacing:.05em; text-transform:uppercase; padding:2px 6px; border-radius:3px; font-weight:600; display:inline-block; margin-top:3px; }
+  .tg-mat { background:var(--accent-soft); color:var(--accent); }
+  .tg-mo { background:#1d2e25; color:var(--green); }
+  .tg-cron { background:var(--green-soft); color:var(--green); }
+  .tg-rec { background:var(--cyan-soft,#0e2a30); color:var(--cyan); }
+  /* cronograma */
+  .cron { padding:12px 18px; border-bottom:1px solid var(--line-soft); }
+  .cron:last-child { border-bottom:none; }
+  .cron-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .cron-name { font-size:12px; font-weight:600; }
+  .cron-prazo { font-size:10px; color:var(--ink-mute); font-family:'JetBrains Mono',monospace; }
+  .etapas { display:flex; gap:4px; }
+  .etapa { flex:1; height:6px; border-radius:3px; background:var(--panel-2); }
+  .etapa.done { background:var(--accent); }
+  .etapa.now { background:var(--cyan); }
+  /* table alertas */
+  .table { width:100%; border-collapse:collapse; }
+  .table th,.table td { padding:11px 18px; text-align:left; border-bottom:1px solid var(--line-soft); font-size:12px; }
+  .table th { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-mute); font-weight:600; background:var(--panel-2); }
+  .table td.mono { font-family:'JetBrains Mono',monospace; }
+  .pct { font-family:'JetBrains Mono',monospace; font-weight:700; padding:2px 8px; border-radius:4px; }
+  .pct.red { background:var(--warn-soft); color:var(--warn); } .pct.gold { background:var(--gold-soft); color:var(--gold); } .pct.ok { background:var(--green-soft); color:var(--green); }
+  @media (max-width:1100px){ .kpi-grid{grid-template-columns:repeat(3,1fr);} .grid-2{grid-template-columns:1fr;} }
+  @media (max-width:760px){ .app{grid-template-columns:1fr;} .sidebar{display:none;} .kpi-grid{grid-template-columns:repeat(2,1fr);} .page-title{font-size:22px;} .content{padding:16px;} .search{display:none;} }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">O</div><div><div class="brand-name">Oaken IA</div><div class="brand-sub">Controle de Obra</div></div></div>
+    <div class="nav-label">Operação</div>
+    <a class="nav-item active"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Visão geral</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>Obras<span class="badge">2</span></a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Gastos</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Cronograma</a>
+    <div class="nav-label">Financeiro</div>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 12h8M8 8h8M8 16h5"/></svg>Orçamentos</a>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4M4 6v12a2 2 0 0 0 2 2h14v-4M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>Recebimentos</a>
+    <div class="nav-label">Sistema</div>
+    <a class="nav-item"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>Configurações</a>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="breadcrumb">Construtora Marco Zero · <strong>Visão geral</strong></div>
+      <div class="topbar-spacer"></div>
+      <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" style="color:var(--ink-mute)"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input placeholder="Buscar obra, gasto, fornecedor..."></div>
+      <button class="icon-btn" onclick="tt()" title="Tema"><svg id="ti" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <div class="user-chip"><div class="user-avatar">EB</div><span class="user-name">Edson</span></div>
+    </header>
+    <div class="content">
+      <div class="page-head">
+        <div><h1 class="page-title">Visão geral</h1><div class="page-sub">5 obras ativas · atualizado há 12 segundos</div></div>
+        <div style="display:flex;gap:16px;align-items:center"><span class="live-dot">Agente ativo</span><button class="btn btn-primary">+ Nova obra</button></div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Obras ativas</div><div class="kpi-value">5</div><div class="kpi-delta">↑ 1 esta semana</div></div>
+        <div class="kpi"><div class="kpi-label">Custo do mês</div><div class="kpi-value">R$ 142,8<small>mil</small></div><div class="kpi-delta up">↑ R$ 21k vs mês passado</div></div>
+        <div class="kpi"><div class="kpi-label">Obras em risco</div><div class="kpi-value">2</div><div class="kpi-delta warn">⚠ Jardim e Vila Rica</div></div>
+        <div class="kpi"><div class="kpi-label">Saldo de orçamento</div><div class="kpi-value">R$ 386<small>mil</small></div><div class="kpi-delta">de R$ 1,28 mi orçado</div></div>
+        <div class="kpi"><div class="kpi-label">A receber (medições)</div><div class="kpi-value">R$ 95<small>mil</small></div><div class="kpi-delta info">3 em aberto</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">Obras — custo vs orçamento</div><div class="card-sub">Verde até 80% · dourado 80-99% · vermelho estourou</div></div><a class="card-link">Ver todas →</a></div>
+        <div class="card-body">
+          <div class="obra"><div class="obra-top"><div><span class="obra-name">Residencial Jardim</span><span class="obra-etapa">· Acabamento</span><span class="tag tag-warn">Atenção</span></div><div class="obra-val">R$ 287k <span class="of">/ R$ 320k</span></div></div><div class="bar-track"><div class="bar" style="width:90%;background:var(--gold)"></div></div></div>
+          <div class="obra"><div class="obra-top"><div><span class="obra-name">Sobrado Vila Rica</span><span class="obra-etapa">· Alvenaria</span><span class="tag tag-red">Estourou</span></div><div class="obra-val">R$ 198k <span class="of">/ R$ 195k</span></div></div><div class="bar-track"><div class="bar" style="width:100%;background:var(--warn)"></div></div></div>
+          <div class="obra"><div class="obra-top"><div><span class="obra-name">Comercial Centro</span><span class="obra-etapa">· Estrutura</span></div><div class="obra-val">R$ 96k <span class="of">/ R$ 240k</span></div></div><div class="bar-track"><div class="bar" style="width:40%;background:var(--green)"></div></div></div>
+          <div class="obra"><div class="obra-top"><div><span class="obra-name">Casa Parque Sul</span><span class="obra-etapa">· Fundação</span></div><div class="obra-val">R$ 64k <span class="of">/ R$ 180k</span></div></div><div class="bar-track"><div class="bar" style="width:36%;background:var(--green)"></div></div></div>
+          <div class="obra"><div class="obra-top"><div><span class="obra-name">Reforma Bela Vista</span><span class="obra-etapa">· Acabamento</span></div><div class="obra-val">R$ 41k <span class="of">/ R$ 85k</span></div></div><div class="bar-track"><div class="bar" style="width:48%;background:var(--green)"></div></div></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Lançamentos recentes — WhatsApp</div><div class="card-sub">O que o agente anotou da conversa</div></div><a class="card-link">Ver tudo →</a></div>
+          <div>
+            <div class="tl-item"><div class="tl-time">08:12</div><div><div class="tl-desc">50 sacos de cimento</div><div class="tl-meta">Obra Jardim</div></div><div><div class="tl-val">R$ 1.200</div><span class="tg tg-mat">Material</span></div></div>
+            <div class="tl-item"><div class="tl-time">08:40</div><div><div class="tl-desc">3 pedreiros — diária</div><div class="tl-meta">Vila Rica</div></div><div><div class="tl-val">R$ 1.350</div><span class="tg tg-mo">Mão de obra</span></div></div>
+            <div class="tl-item"><div class="tl-time">09:05</div><div><div class="tl-desc">bateu a laje</div><div class="tl-meta">Centro</div></div><div><div class="tl-val">—</div><span class="tg tg-cron">Cronograma</span></div></div>
+            <div class="tl-item"><div class="tl-time">10:21</div><div><div class="tl-desc">2ª medição recebida</div><div class="tl-meta">Jardim</div></div><div><div class="tl-val in">+R$ 35.000</div><span class="tg tg-rec">Recebimento</span></div></div>
+            <div class="tl-item"><div class="tl-time">11:03</div><div><div class="tl-desc">areia + brita (caçamba)</div><div class="tl-meta">Parque Sul</div></div><div><div class="tl-val">R$ 680</div><span class="tg tg-mat">Material</span></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Cronograma das obras</div><div class="card-sub">Fundação → Acabamento</div></div></div>
+          <div>
+            <div class="cron"><div class="cron-top"><span class="cron-name">Jardim · Acabamento</span><span class="cron-prazo">18 dias</span></div><div class="etapas"><span class="etapa done"></span><span class="etapa done"></span><span class="etapa done"></span><span class="etapa done"></span><span class="etapa now"></span></div></div>
+            <div class="cron"><div class="cron-top"><span class="cron-name">Vila Rica · Alvenaria <span class="tag tag-warn">atrasada 6d</span></span><span class="cron-prazo">40 dias</span></div><div class="etapas"><span class="etapa done"></span><span class="etapa done"></span><span class="etapa now"></span><span class="etapa"></span><span class="etapa"></span></div></div>
+            <div class="cron"><div class="cron-top"><span class="cron-name">Centro · Estrutura</span><span class="cron-prazo">70 dias</span></div><div class="etapas"><span class="etapa done"></span><span class="etapa now"></span><span class="etapa"></span><span class="etapa"></span><span class="etapa"></span></div></div>
+            <div class="cron"><div class="cron-top"><span class="cron-name">Parque Sul · Fundação</span><span class="cron-prazo">95 dias</span></div><div class="etapas"><span class="etapa now"></span><span class="etapa"></span><span class="etapa"></span><span class="etapa"></span><span class="etapa"></span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div><div class="card-title">⚠️ Alertas de estouro — atenção</div><div class="card-sub">Obras perto ou acima do orçamento</div></div></div>
+        <table class="table">
+          <thead><tr><th>Obra</th><th>Etapa</th><th>Orçado</th><th>Gasto</th><th>%</th><th style="text-align:right">Ação</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Sobrado Vila Rica</strong></td><td>Alvenaria</td><td class="mono">R$ 195k</td><td class="mono">R$ 198k</td><td><span class="pct red">102%</span></td><td style="text-align:right"><button class="btn">Revisar</button></td></tr>
+            <tr><td><strong>Residencial Jardim</strong></td><td>Acabamento</td><td class="mono">R$ 320k</td><td class="mono">R$ 287k</td><td><span class="pct gold">90%</span></td><td style="text-align:right"><button class="btn">Revisar</button></td></tr>
+            <tr><td><strong>Reforma Bela Vista</strong></td><td>Acabamento</td><td class="mono">R$ 85k</td><td class="mono">R$ 41k</td><td><span class="pct ok">48%</span></td><td style="text-align:right">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+  function tt(){ var h=document.documentElement, n=h.getAttribute('data-theme')==='dark'?'light':'dark'; h.setAttribute('data-theme',n); var i=document.getElementById('ti'); i.innerHTML = n==='light' ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>' : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'; try{localStorage.setItem('oaken-theme',n)}catch(e){} }
+  try{ if(localStorage.getItem('oaken-theme')==='light'){ document.documentElement.setAttribute('data-theme','light'); document.getElementById('ti').innerHTML='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>'; } }catch(e){}
+</script>
+</body>
+</html>
