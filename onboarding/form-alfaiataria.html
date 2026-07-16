@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário de início — Alfaiate / Ateliê de Ajustes — Oaken IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f1ec;--paper:#fbf9f5;--ink:#1a1a17;--ink-soft:#4a4a44;--line:#d8d3ca;
+--accent:#1f4d3a;--accent-soft:#e8efe9;--gold:#b8893f;--cinza:#7a7a72;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+line-height:1.55;font-size:16px;-webkit-font-smoothing:antialiased;}
+.page{max-width:680px;margin:0 auto;padding:40px 28px 64px;background:var(--paper);min-height:100vh;
+border-left:1px solid var(--line);border-right:1px solid var(--line);}
+.head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);
+padding-bottom:18px;margin-bottom:28px;}
+.brand{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;}
+.brand-tag{font-size:11px;color:var(--cinza);letter-spacing:.14em;text-transform:uppercase;}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:32px;line-height:1.12;
+letter-spacing:-.02em;margin-bottom:12px;}
+.intro{color:var(--ink-soft);margin-bottom:8px;}
+.note{color:var(--cinza);font-style:italic;font-size:14px;margin-bottom:24px;}
+.secao{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:20px;color:var(--accent);
+margin:34px 0 4px;padding-bottom:8px;border-bottom:2px solid var(--accent);letter-spacing:-.01em;}
+.campo{margin:18px 0;}
+label{display:block;font-weight:600;font-size:15px;margin-bottom:4px;}
+.ajuda{display:block;color:var(--cinza);font-size:13px;font-style:italic;margin-bottom:8px;}
+input[type=text],textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px 12px;outline:none;
+transition:border-color .12s;}
+input[type=text]:focus,textarea:focus{border-color:var(--accent);}
+textarea{resize:vertical;min-height:64px;}
+.acoes{position:sticky;bottom:0;background:linear-gradient(transparent,var(--paper) 22%);
+padding-top:28px;margin-top:36px;}
+.btn{display:block;width:100%;text-align:center;padding:16px;border:none;border-radius:8px;
+font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.01em;}
+.btn-wa{background:var(--accent);color:var(--paper);margin-bottom:10px;}
+.btn-wa:hover{filter:brightness(1.08);}
+.btn-copy{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+.btn-copy:hover{background:var(--accent-soft);}
+.ok{text-align:center;color:var(--accent);font-size:14px;font-weight:600;margin-top:10px;min-height:18px;}
+.footer{text-align:center;color:var(--cinza);font-size:12px;margin-top:28px;letter-spacing:.04em;}
+@media(max-width:600px){.page{padding:28px 18px 56px;}h1{font-size:26px;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Formulário · Alfaiates &amp; Ateliês de Ajuste</span>
+  </div>
+  <h1>Formulário de início — Alfaiate / Ateliê de Ajustes</h1>
+  <p class="intro">Estas informações são o que preciso pra montar o seu controle de ordens de serviço no WhatsApp — cada peça que chega vira um registro, e cada loja parceira acompanha pelo próprio painel.</p>
+  <p class="note">Não precisa responder tudo de uma vez nem com perfeição. O que não souber, deixe em branco — a gente resolve junto.</p>
+
+  <form id="form" onsubmit="return false;">
+<div class="secao">Parte 1 · O ateliê</div>
+<div class="campo"><label for="c0">1. Nome do ateliê e do responsável</label><input type="text" id="c0" data-q="Nome do ateliê e do responsável"></div>
+<div class="campo"><label for="c1">2. Cidade / shopping onde atende</label><input type="text" id="c1" data-q="Cidade / shopping onde atende"></div>
+<div class="campo"><label for="c2">3. Quantas lojas parceiras você atende hoje?</label><span class="ajuda">Ex.: 2 lojas de terno, 1 de moda feminina...</span><input type="text" id="c2" data-q="Quantas lojas parceiras você atende hoje"></div>
+<div class="secao">Parte 2 · WhatsApp (são 2 números)</div>
+<div class="campo"><label for="c3">4. Número de WhatsApp que vai falar com o AGENTE (registrar entrada e avisar quando ficar pronto)</label><span class="ajuda">Ex.: +55 11 99999-9999. Esse número fica dedicado ao agente — não é o seu WhatsApp pessoal do dia a dia.</span><input type="text" id="c3" data-q="Número de WhatsApp que vai falar com o AGENTE"></div>
+<div class="campo"><label for="c4">5. Seu WhatsApp pessoal (separado do número do agente)</label><input type="text" id="c4" data-q="Seu WhatsApp pessoal"></div>
+<div class="secao">Parte 3 · Suas lojas parceiras</div>
+<div class="campo"><label for="c5">6. Cada loja tem um painel próprio (login e senha) onde ela mesma cadastra nome, endereço/shopping, telefone, gerentes e vendedores — e só enxerga as peças dela, nunca as de outra loja.</label><span class="ajuda">Você só precisa nos passar o WhatsApp ou e-mail de quem vai receber o convite de acesso de cada loja; o resto a própria loja preenche.</span><input type="text" id="c5" data-q="Cada loja tem um painel próprio"></div>
+<div class="campo"><label for="c6">Nome da loja (como você chama)</label><span class="ajuda">Ex.: &#x27;Boss&#x27; — (11) 9XXXX-XXXX</span><textarea id="c6" rows="4" placeholder="Uma linha por item. Colunas: Nome da loja (como você chama) | WhatsApp/e-mail pra enviar o convite de acesso" data-q="Nome da loja (como você chama)"></textarea></div>
+<div class="secao">Parte 4 · Como funciona a entrada da peça</div>
+<div class="campo"><label for="c7">7. Quando a peça chega (motoboy, cliente na loja), você manda áudio ou texto pro agente?</label><span class="ajuda">Diga o que costuma falar: loja, nome do cliente final, peça, o que precisa ajustar, prazo de entrega</span><input type="text" id="c7" data-q="Quando a peça chega (motoboy, cliente na loja), você manda áudio ou texto pro agente"></div>
+<div class="campo"><label for="c8">8. Quer que o agente confirme com você antes de gravar (&quot;é isso mesmo?&quot;) sempre, ou só quando tiver dúvida?</label><input type="text" id="c8" data-q="Quer que o agente confirme com você antes de gravar (&quot;é isso mesmo"></div>
+<div class="secao">Parte 5 · Catálogo de serviços e preços</div>
+<div class="campo"><label for="c9">Peça</label><span class="ajuda">Ex.: Calça / Barra / R$ 25 / 2 dias. Acrescente linhas se precisar — calça, camisa, paletó/terno, colete, saia, vestido...</span><textarea id="c9" rows="4" placeholder="Uma linha por item. Colunas: Peça | Serviço/ajuste | Preço médio | Prazo padrão" data-q="Peça"></textarea></div>
+<div class="secao">Parte 6 · Quando a peça fica pronta</div>
+<div class="campo"><label for="c10">9. Quando termina o ajuste, o que você fala pro agente?</label><span class="ajuda">Ex.: nome do cliente, telefone, ou só a loja + peça — o agente casa com a ordem em aberto</span><input type="text" id="c10" data-q="Quando termina o ajuste, o que você fala pro agente"></div>
+<div class="campo"><label for="c11">10. Se o agente não tiver certeza de qual peça é (nome repetido, mais de uma loja), ele deve perguntar de volta pra você antes de avisar a loja errada?</label><input type="text" id="c11" data-q="Se o agente não tiver certeza de qual peça é (nome repetido, mais de uma loja), ele deve perguntar de volta pra você antes de avisar a loja errada"></div>
+<div class="campo"><label for="c12">11. A loja deve receber aviso automático quando a peça fica pronta, ou só consulta quando quiser (login e olha)?</label><input type="text" id="c12" data-q="A loja deve receber aviso automático quando a peça fica pronta, ou só consulta quando quiser (login e olha)"></div>
+<div class="secao">Parte 7 · Observações</div>
+<div class="campo"><label for="c13">12. Algo específico do seu jeito de trabalhar que o agente precisa saber?</label><span class="ajuda">Gírias que você usa pros ajustes, forma de falar com as lojas, o que mais te faz perder tempo hoje...</span><textarea id="c13" rows="4" data-q="Algo específico do seu jeito de trabalhar que o agente precisa saber"></textarea></div>
+  </form>
+
+  <div class="acoes">
+    <button type="button" id="btn-wa" class="btn btn-wa">Enviar pelo WhatsApp →</button>
+    <button type="button" id="btn-copy" class="btn btn-copy">Copiar respostas</button>
+    <div id="ok" class="ok"></div>
+  </div>
+
+  <div class="footer">Oaken IA · Isaac · +351 913 388 794</div>
+</div>
+<script>
+(function(){
+  var DEST = "351913388794";
+  function montarTexto(){
+    var campos = document.querySelectorAll('[data-q]');
+    var linhas = ['*Formulario Oaken IA - Alfaiates & Ateliês de Ajuste*',''];
+    campos.forEach(function(c){
+      var v = (c.value || '').trim();
+      if(!v) return;
+      linhas.push('*' + c.getAttribute('data-q') + '*');
+      linhas.push(v);
+      linhas.push('');
+    });
+    if(linhas.length <= 2){ return null; }
+    return linhas.join('\n');
+  }
+  function enviar(){
+    var texto = montarTexto();
+    if(!texto){ msg('Preencha pelo menos uma resposta antes de enviar.', true); return; }
+    var url = 'https://wa.me/' + DEST + '?text=' + encodeURIComponent(texto);
+    window.open(url, '_blank');
+    msg('Abrindo o WhatsApp... e so tocar em enviar.');
+  }
+  function copiar(){
+    var texto = montarTexto();
+    if(!texto){ msg('Preencha pelo menos uma resposta antes de copiar.', true); return; }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(function(){ msg('Respostas copiadas! Cole no WhatsApp do Isaac.'); },
+        function(){ fallbackCopy(texto); });
+    } else { fallbackCopy(texto); }
+  }
+  function fallbackCopy(texto){
+    var ta = document.createElement('textarea'); ta.value = texto;
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); msg('Respostas copiadas! Cole no WhatsApp do Isaac.'); }
+    catch(e){ msg('Nao consegui copiar automaticamente.', true); }
+    document.body.removeChild(ta);
+  }
+  function msg(t, erro){
+    var el = document.getElementById('ok');
+    el.textContent = t;
+    el.style.color = erro ? '#b8431f' : '#1f4d3a';
+  }
+  document.getElementById('btn-wa').addEventListener('click', enviar);
+  document.getElementById('btn-copy').addEventListener('click', copiar);
+})();
+</script>
+</body>
+</html>

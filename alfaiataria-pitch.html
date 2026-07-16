@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA — Controle de Ordens de Serviço para Ateliês de Ajuste e Alfaiates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ec;
+    --paper: #fbf9f5;
+    --ink: #1a1a17;
+    --ink-soft: #4a4a44;
+    --line: #d8d3ca;
+    --accent: #1f4d3a;
+    --accent-soft: #e8efe9;
+    --warn: #b8431f;
+    --gold: #b8893f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 32px;
+    background: var(--paper);
+    min-height: 100vh;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 6px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 600; }
+  h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 56px 0 20px;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.005em;
+  }
+  p { color: var(--ink-soft); margin-bottom: 14px; }
+  p.lead { font-size: 19px; line-height: 1.5; color: var(--ink); max-width: 620px; }
+  .rule { height: 1px; background: var(--line); margin: 40px 0; border: none; }
+  .rule-thick { height: 2px; background: var(--ink); margin: 40px 0; border: none; }
+
+  .pain-list { list-style: none; margin: 24px 0; }
+  .pain-list li {
+    padding: 16px 0 16px 36px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    color: var(--ink);
+    font-size: 16px;
+  }
+  .pain-list li:before {
+    content: "✕";
+    position: absolute; left: 4px; top: 16px;
+    color: var(--warn);
+    font-weight: 700;
+  }
+  .pain-list li strong { color: var(--warn); }
+
+  .modules { margin: 24px 0; }
+  .module {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: start;
+  }
+  .module-num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    line-height: 1;
+    padding-top: 2px;
+  }
+  .module h3 { margin-bottom: 6px; }
+  .module p { margin: 0; font-size: 15px; }
+
+  .compare {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+    font-size: 15px;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row.head {
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .compare-row.head .compare-cost { color: var(--paper); }
+  .compare-cost {
+    text-align: right;
+    font-weight: 600;
+    color: var(--warn);
+    font-variant-numeric: tabular-nums;
+  }
+  .compare-row.total {
+    background: var(--accent-soft);
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .compare-row.total .compare-cost { color: var(--accent); font-size: 17px; }
+
+  .price-box {
+    border: 2px solid var(--ink);
+    padding: 36px 32px;
+    margin: 40px 0;
+    text-align: center;
+    background: var(--paper);
+    position: relative;
+  }
+  .price-label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .price-value {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .price-value sup { font-size: 24px; vertical-align: top; margin-right: 4px; font-weight: 500; }
+  .price-period { font-size: 16px; color: var(--ink-soft); margin-top: 8px; }
+  .price-note { font-size: 13px; color: var(--ink-soft); margin-top: 18px; font-style: italic; }
+
+  .guarantee {
+    border-left: 4px solid var(--gold);
+    padding: 20px 24px;
+    background: #faf6ed;
+    margin: 32px 0;
+  }
+  .guarantee h3 { color: var(--gold); margin-bottom: 8px; font-size: 15px; letter-spacing: 0.02em; text-transform: uppercase; }
+  .guarantee p { color: var(--ink); margin: 0; }
+
+  .quote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    padding: 24px 0 24px 28px;
+    border-left: 3px solid var(--accent);
+    margin: 32px 0;
+  }
+  .quote-attr {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  .steps { counter-reset: step; margin: 24px 0; }
+  .step {
+    counter-increment: step;
+    padding: 14px 0 14px 44px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+  .step:before {
+    content: counter(step);
+    position: absolute;
+    left: 0; top: 14px;
+    width: 28px; height: 28px;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .step strong { display: block; margin-bottom: 2px; }
+  .step span { font-size: 14px; color: var(--ink-soft); }
+
+  .cta-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px 32px;
+    margin: 48px -32px -48px;
+    text-align: center;
+  }
+  .cta-block h2 { color: var(--paper); margin-top: 0; }
+  .cta-block p { color: #bfbfb8; }
+  .cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 32px;
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    border-radius: 2px;
+  }
+  .cta-secondary {
+    display: inline-block;
+    margin-top: 14px;
+    margin-left: 10px;
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    border-radius: 2px;
+    border: 1.5px solid var(--paper);
+  }
+  .contact-line {
+    font-size: 14px;
+    color: #9a9a93;
+    margin-top: 18px;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-mark {
+    text-align: center;
+    padding: 24px 0 0;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .header-mark {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+  .brand-tag {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .math-box {
+    background: var(--accent-soft);
+    padding: 24px 28px;
+    border-radius: 4px;
+    margin: 28px 0;
+  }
+  .math-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    font-size: 15px;
+    border-bottom: 1px dashed rgba(31, 77, 58, 0.25);
+  }
+  .math-line:last-child { border-bottom: none; padding-top: 14px; font-weight: 700; font-size: 17px; color: var(--accent); }
+  .math-line span:last-child { font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 600px) {
+    .page { padding: 32px 20px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+    .price-value { font-size: 56px; }
+    .compare-row { grid-template-columns: 1fr 100px; padding: 12px 14px; font-size: 14px; }
+    .cta-block { margin: 40px -20px -32px; padding: 32px 20px; }
+    .cta-secondary { margin-left: 0; margin-top: 10px; display: block; }
+  }
+
+  @media print {
+    body { background: white; }
+    .page { border: none; max-width: none; padding: 24px 32px; }
+    .cta-block { margin: 32px 0 0; }
+    h2 { page-break-after: avoid; }
+    .price-box, .compare, .math-box, .guarantee { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="header-mark">
+    <span class="brand">Oaken IA</span>
+    <span class="brand-tag">Proposta · Ateliês de Ajuste & Alfaiataria · 2026</span>
+  </div>
+
+  <span class="badge">Proposta exclusiva</span>
+
+  <h1>O cliente liga perguntando se a roupa ficou pronta, e <em>ninguém no ateliê tem certeza</em>.</h1>
+
+  <p class="lead">Você atende várias lojas ao mesmo tempo. Cada peça que chega é um cliente diferente, um prazo diferente, um ajuste diferente. Sem um jeito organizado de registrar tudo, a informação vive na sua cabeça — e quando a loja liga perguntando, a resposta é sempre "deixa eu ver aqui".</p>
+
+  <hr class="rule-thick">
+
+  <h2>As dores de quem presta ajuste pra loja de shopping</h2>
+
+  <ul class="pain-list">
+    <li><strong>Nota fria manuscrita ilegível</strong> — o motoboy entrega um papel com letra apressada. Às vezes nem quem escreveu entende depois.</li>
+    <li><strong>Cliente ligando pra loja perguntando "já ficou pronto?"</strong> — e o vendedor não tem como confirmar na hora, sem te ligar ou ir atrás do papel.</li>
+    <li><strong>Peça de qual loja, de qual cliente?</strong> — atendendo 2, 3, 5 lojas ao mesmo tempo, é fácil confundir uma calça da Boss com uma da Brooksfield.</li>
+    <li><strong>Atraso que só aparece quando o cliente reclama</strong> — sem prazo visível, o ajuste atrasado só é percebido tarde demais.</li>
+    <li><strong>Vendedor que sai e leva a informação junto</strong> — sem registro central, cada vendedor guarda os próprios clientes "de cabeça".</li>
+    <li><strong>Nenhum histórico organizado</strong> — quantas peças você ajustou pra cada loja esse mês? Quanto tempo médio de entrega? Ninguém sabe dizer com certeza.</li>
+  </ul>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA faz pelo seu ateliê</h2>
+
+  <p>Não é uma planilha nem um grupo de WhatsApp. É um agente que ouve você (voz ou texto), registra a ordem de serviço, e mantém cada loja informada sozinha — sem você precisar responder ligação nenhuma.</p>
+
+  <div class="modules">
+
+    <div class="module">
+      <span class="module-num">01</span>
+      <div>
+        <h3>Registro por voz ou texto</h3>
+        <p>Chegou a peça? Você fala (ou digita) pro agente: loja, cliente, o que precisa ajustar, prazo de entrega. A IA entende, confirma com você antes de gravar ("é isso mesmo?") e registra a ordem de serviço. Sem letra ilegível, sem papel perdido.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">02</span>
+      <div>
+        <h3>Aviso automático quando fica pronto</h3>
+        <p>Quando você termina o ajuste, é só falar "terminei a calça do fulano, da loja tal" — o agente marca como pronto e avisa a loja certa na hora, pelo WhatsApp. O vendedor sabe antes mesmo do cliente ligar.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">03</span>
+      <div>
+        <h3>Um login por loja, sem misturar</h3>
+        <p>Cada loja parceira acessa o próprio painel, com login e senha — e só enxerga as peças dela. A Boss nunca vê o que é da Brooksfield, e vice-versa.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">04</span>
+      <div>
+        <h3>Cada loja cadastra os próprios dados</h3>
+        <p>Endereço, gerentes, vendedores — a própria loja preenche no painel dela, sem limite de quantos gerentes ou vendedores. Vendedor saiu? Ela mesma remove. Você não precisa digitar nada disso.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">05</span>
+      <div>
+        <h3>Também funciona manualmente</h3>
+        <p>Não quer usar WhatsApp pra marcar como pronto? Abre o painel e marca com um clique — o aviso automático pra loja dispara do mesmo jeito.</p>
+      </div>
+    </div>
+
+    <div class="module">
+      <span class="module-num">06</span>
+      <div>
+        <h3>Catálogo de serviços e preços</h3>
+        <p>Barra de calça, ajuste de manga, ombro de paletó, cós, punho de camisa — cada peça e serviço com preço e prazo padrão, pra padronizar o orçamento e ajudar a IA a reconhecer o pedido certo.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="rule">
+
+  <h2>Quanto custa hoje resolver isso "do jeito normal"</h2>
+
+  <div class="compare">
+    <div class="compare-row head">
+      <span>Jeito tradicional</span>
+      <span class="compare-cost">Custo real</span>
+    </div>
+    <div class="compare-row">
+      <span>Tempo por dia respondendo "já ficou pronto?" pras lojas</span>
+      <span class="compare-cost">30–60 min</span>
+    </div>
+    <div class="compare-row">
+      <span>Retrabalho por nota mal escrita ou perdida</span>
+      <span class="compare-cost">peças extraviadas</span>
+    </div>
+    <div class="compare-row">
+      <span>Cliente insatisfeito por atraso não percebido a tempo</span>
+      <span class="compare-cost">confiança da loja</span>
+    </div>
+    <div class="compare-row total">
+      <span>Tempo e confiança que você recupera com o agente</span>
+      <span class="compare-cost">todo dia</span>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>O que a Oaken IA cobra</h2>
+
+  <div class="price-box">
+    <div class="price-label">Plano único · Tudo incluído</div>
+    <div class="price-value"><sup>R$</sup>120</div>
+    <div class="price-period">por mês · sem fidelidade · sem taxa de instalação</div>
+    <div class="price-note">Cancela quando quiser. Sem contrato amarrado, sem multa.</div>
+  </div>
+
+  <div class="math-box">
+    <div class="math-line"><span>Tempo economizado por dia sem ligação de loja perguntando status</span><span>~45 min</span></div>
+    <div class="math-line"><span>Custo mensal Oaken IA</span><span>R$ 120</span></div>
+    <div class="math-line"><span>Retorno em tempo livre pra costurar, não responder telefone</span><span>todo santo dia</span></div>
+  </div>
+
+  <div class="guarantee">
+    <h3>Garantia de 30 dias</h3>
+    <p>Se em 30 dias a Oaken IA não deixar claro pra você e pras suas lojas parceiras o status de cada peça, sem precisar de ligação nenhuma, devolvo o dinheiro integral. Sem perguntas, sem burocracia.</p>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Como funciona pra começar</h2>
+
+  <div class="steps">
+    <div class="step">
+      <strong>Você assina hoje</strong>
+      <span>R$ 120 pelo primeiro mês. Sem instalação, sem taxa.</span>
+    </div>
+    <div class="step">
+      <strong>Em 48h o agente está rodando no seu WhatsApp</strong>
+      <span>Eu configuro o catálogo de serviços, preços e prazos com você.</span>
+    </div>
+    <div class="step">
+      <strong>Você convida suas lojas parceiras</strong>
+      <span>Cada uma recebe o próprio login e cadastra os dados sozinha.</span>
+    </div>
+    <div class="step">
+      <strong>Eu cuido de manter, atualizar e melhorar</strong>
+      <span>Você não mexe em nada técnico. Nova loja, novo serviço — me manda mensagem, eu ajusto.</span>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <h2>Por que R$ 120, e não R$ 490?</h2>
+
+  <p>Sinceramente: porque eu estou montando carteira inicial em 2026 e quero ateliês e alfaiates como vitrine — principalmente quem atende lojas de shopping, que é onde essa dor é maior. Quando eu tiver os primeiros clientes, esse plano sai do ar e o preço normal sobe. Quem entra agora, trava esse valor enquanto estiver ativo.</p>
+
+  <div class="quote">
+    "A loja não precisa mais ligar pra descobrir se a roupa está pronta. Ela já sabe — antes até do cliente perguntar."
+    <span class="quote-attr">— Isaac · Oaken IA</span>
+  </div>
+
+  <div class="cta-block">
+    <h2>Vamos colocar isso pra rodar essa semana?</h2>
+    <p>Me responde no WhatsApp e em 48h seu ateliê tem registro organizado, lojas avisadas na hora e painel funcionando.</p>
+    <a target="_top" href="https://wa.me/351913388794?text=Ol%C3%A1%2C%20vi%20a%20proposta%20da%20Oaken%20IA%20para%20o%20meu%20ateli%C3%AA%20de%20ajustes%20e%20gostaria%20de%20conversar." class="cta-button">Falar no WhatsApp →</a>
+    <a target="_top" href="painel-alfaiataria-demo.html" class="cta-secondary">Ver painel de demonstração →</a>
+    <div class="contact-line">Isaac · Oaken IA · +351 913 388 794</div>
+  </div>
+
+  <div class="footer-mark">
+    Proposta válida até 30 de Julho de 2026
+  </div>
+
+</div>
+
+</body>
+</html>

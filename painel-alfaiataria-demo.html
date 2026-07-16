@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-PT" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oaken IA · Painel — Ateliê de Ajustes Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  /* paleta padrão Oaken (roxo/cyan) — usada em todos os paineis reais e demos a partir de agora */
+  :root[data-theme="dark"] {
+    --bg:#0a0a0f; --panel:#12121a; --panel-2:#1a1a25; --line:#1e1e2e; --line-soft:#181822;
+    --ink:#e8e8ed; --ink-soft:#8b8b9e; --ink-mute:#5a5a72;
+    --accent:#8b5cf6; --accent-soft:#1c1733; --accent-line:#312a52;
+    --cyan:#22d3ee; --cyan-soft:#0e2730;
+    --green:#10b981; --green-soft:#0f2620; --warn:#f43f5e; --warn-soft:#2a1620;
+    --gold:#f59e0b; --gold-soft:#2a2110; --info:#3b82f6; --info-soft:#0e2730;
+    --shadow: 0 1px 0 rgba(255,255,255,0.02), 0 8px 24px rgba(0,0,0,0.18);
+  }
+  :root[data-theme="light"] {
+    --bg:#f8f8fc; --panel:#ffffff; --panel-2:#f0f0f8; --line:#e2e2ee; --line-soft:#ececf6;
+    --ink:#1a1a2e; --ink-soft:#5a5a7a; --ink-mute:#9a9ab0;
+    --accent:#7c3aed; --accent-soft:#f0ebfe; --accent-line:#ddd2fb;
+    --cyan:#0891b2; --cyan-soft:#e0f5fa;
+    --green:#059669; --green-soft:#e6f6f0; --warn:#e11d48; --warn-soft:#fce8ec;
+    --gold:#d97706; --gold-soft:#fdf3e2; --info:#2563eb; --info-soft:#e0f5fa;
+    --shadow: 0 1px 0 rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); font-size: 13px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  .sidebar { background: var(--panel); border-right: 1px solid var(--line); padding: 20px 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .main { display: flex; flex-direction: column; min-width: 0; }
+  .topbar { display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .content { padding: 24px; flex: 1; }
+
+  .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 20px; border-bottom: 1px solid var(--line-soft); margin-bottom: 16px; }
+  .brand-mark { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--bg); font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; }
+  .brand-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.12em; text-transform: uppercase; margin-top: -2px; }
+
+  .role-switch { display: flex; gap: 4px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 3px; margin-bottom: 16px; }
+  .role-btn { flex: 1; text-align: center; padding: 7px 4px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--ink-soft); transition: all .12s; border: none; background: none; font-family: inherit; }
+  .role-btn.active { background: var(--accent); color: var(--bg); }
+
+  .nav-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-mute); padding: 14px 10px 6px; font-weight: 600; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; color: var(--ink-soft); text-decoration: none; font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.1s, color 0.1s; }
+  .nav-item:hover { background: var(--panel-2); color: var(--ink); }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav-item .badge { margin-left: auto; background: var(--accent); color: var(--bg); font-size: 10px; padding: 1px 6px; border-radius: 8px; font-weight: 600; }
+  .nav-item .badge.warn { background: var(--warn); }
+  .nav-icon { width: 16px; height: 16px; stroke-width: 1.7; stroke: currentColor; fill: none; }
+
+  .breadcrumb { font-size: 12px; color: var(--ink-mute); letter-spacing: 0.02em; }
+  .breadcrumb strong { color: var(--ink); font-weight: 600; }
+  .topbar-spacer { flex: 1; }
+  .icon-btn { width: 32px; height: 32px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink-soft); transition: all 0.1s; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--ink-mute); }
+  .icon-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  .user-chip { display: flex; align-items: center; gap: 10px; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 20px; background: var(--panel-2); }
+  .user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; }
+  .user-name { font-size: 12px; font-weight: 500; }
+
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+  .page-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 28px; letter-spacing: -0.015em; line-height: 1.1; }
+  .page-sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .live-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .live-dot::before { content: ''; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 0 var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); } 70% { box-shadow: 0 0 0 8px rgba(139,92,246,0); } 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); } }
+  .page-actions { display: flex; gap: 8px; }
+  .btn { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.1s; }
+  .btn:hover { border-color: var(--ink-mute); }
+  .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .kpi-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; margin-bottom: 8px; }
+  .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .kpi-delta { font-size: 11px; margin-top: 8px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; }
+  .kpi-delta.up { color: var(--accent); }
+  .kpi-delta.warn { color: var(--warn); }
+
+  .grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 16px; }
+  .card-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line-soft); }
+  .card-title { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+  .card-sub { font-size: 11px; color: var(--ink-mute); letter-spacing: 0.04em; }
+  .card-link { font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; background: none; border: none; font-family: inherit; }
+  .card-link:hover { text-decoration: underline; }
+
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line-soft); }
+  .pipe-col { background: var(--panel); min-height: 220px; padding: 12px; }
+  .pipe-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .pipe-head .name { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+  .pipe-head .count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-mute); background: var(--panel-2); padding: 2px 6px; border-radius: 4px; }
+  .lead-card { background: var(--panel-2); border: 1px solid var(--line-soft); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.1s, transform 0.1s; }
+  .lead-card:hover { border-color: var(--accent-line); transform: translateY(-1px); }
+  .lead-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .lead-meta { font-size: 10px; color: var(--ink-mute); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em; }
+  .lead-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .tag { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+  .tag-loja { background: var(--info-soft); color: var(--info); }
+  .tag-vend { background: var(--gold-soft); color: var(--gold); }
+  .tag-atraso { background: var(--warn-soft); color: var(--warn); }
+
+  .conv-list { padding: 4px 0; }
+  .conv { display: grid; grid-template-columns: 32px 1fr; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line-soft); }
+  .conv:last-child { border-bottom: none; }
+  .conv-avatar { width: 32px; height: 32px; background: var(--panel-2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--ink-soft); border: 1px solid var(--line); }
+  .conv-body { min-width: 0; }
+  .conv-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .bubble { background: var(--panel-2); border-radius: 8px; padding: 8px 11px; font-size: 12px; margin-bottom: 6px; max-width: 92%; }
+  .bubble.bot { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+  .bubble .tick { font-size: 9px; color: var(--ink-mute); margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+
+  .table { width: 100%; border-collapse: collapse; }
+  .table th, .table td { padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 12px; }
+  .table th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); font-weight: 600; background: var(--panel-2); }
+  .table td.mono { font-family: 'JetBrains Mono', monospace; }
+  .status-badge { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+  .st-recebido { background: var(--info-soft); color: var(--info); }
+  .st-andamento { background: var(--gold-soft); color: var(--gold); }
+  .st-pronto { background: var(--cyan-soft); color: var(--cyan); }
+  .st-entregue { background: var(--panel-2); color: var(--ink-mute); }
+  .days-badge { font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; letter-spacing: .02em; }
+  .field input, .field select { width: 100%; padding: 9px 11px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; color: var(--ink); font-family: inherit; font-size: 12.5px; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
+  .lojista-banner { background: var(--accent-soft); border: 1px solid var(--accent-line); border-radius: 8px; padding: 12px 16px; font-size: 12px; color: var(--accent); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .btn-marcar-pronto { background: var(--cyan-soft); color: var(--cyan); border-color: var(--cyan); font-size: 11px; padding: 6px 10px; white-space: nowrap; }
+  .field-row { display: flex; gap: 6px; align-items: center; }
+  .field-row input { flex: 1; }
+  .btn-remove-pessoa { flex: none; width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--warn); background: var(--warn-soft); color: var(--warn); font-size: 15px; line-height: 1; cursor: pointer; font-family: inherit; }
+  .btn-remove-pessoa:hover { filter: brightness(1.1); }
+  .btn-marcar-pronto:hover { filter: brightness(1.1); }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--panel); border: 1px solid var(--accent-line); border-left: 4px solid var(--cyan); border-radius: 8px; padding: 14px 18px; box-shadow: var(--shadow); font-size: 12.5px; max-width: 320px; transform: translateY(120%); opacity: 0; transition: transform .25s ease, opacity .25s ease; z-index: 200; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 1100px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .pipeline { grid-template-columns: repeat(2, 1fr); }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 99; }
+  .sidebar-overlay.show { display: block; }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { position: fixed; top: 0; left: 0; width: 232px; transform: translateX(-100%); z-index: 100; transition: transform 0.2s; height: 100vh; }
+    .sidebar.open { transform: translateX(0); }
+    .menu-btn { display: flex !important; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .pipeline { grid-template-columns: 1fr; }
+    .page-title { font-size: 22px; }
+    .topbar { padding: 12px 16px; }
+    .content { padding: 16px; }
+    .user-name { display: none; }
+  }
+  .menu-btn { display: none; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">O</div>
+      <div>
+        <div class="brand-name">Oaken IA</div>
+        <div class="brand-sub">CRM · Ajustes</div>
+      </div>
+    </div>
+
+    <div class="role-switch">
+      <button class="role-btn active" id="btn-role-atelie" onclick="setRole('atelie')">Estúdio da Costura</button>
+      <button class="role-btn" id="btn-role-loja" onclick="setRole('loja')">Loja</button>
+    </div>
+
+    <div id="nav-atelie">
+      <div class="nav-label">Operação</div>
+      <a class="nav-item active" onclick="showScreen('visao', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+        Visão geral
+      </a>
+      <a class="nav-item" onclick="showScreen('os', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 2h6l1 4H8l1-4zM5 7h14l-1 14H6L5 7z"/></svg>
+        Ordens de serviço
+        <span class="badge">18</span>
+      </a>
+      <a class="nav-item" onclick="showScreen('conversas', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Conversas
+        <span class="badge">4</span>
+      </a>
+      <a class="nav-item" onclick="showScreen('lojas', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l1-5h16l1 5M4 9v11h16V9M4 9h16M9 20v-6h6v6"/></svg>
+        Lojas & Vendedores
+      </a>
+      <a class="nav-item" onclick="showScreen('catalogo', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15z"/></svg>
+        Catálogo & Preços
+      </a>
+    </div>
+
+    <div id="nav-loja" style="display:none">
+      <div class="nav-label">Loja</div>
+      <select id="loja-picker" onchange="trocarLoja(this.value)" style="width:100%;padding:8px 10px;margin-bottom:10px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;color:var(--ink);font-family:inherit;font-size:12.5px">
+        <option value="Boss">Boss</option>
+        <option value="Brooksfield">Brooksfield</option>
+        <option value="VR">VR Collezioni</option>
+      </select>
+      <a class="nav-item active" onclick="showScreen('loja-os', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 2h6l1 4H8l1-4zM5 7h14l-1 14H6L5 7z"/></svg>
+        Minhas peças
+        <span class="badge" id="badge-loja-os">6</span>
+      </a>
+      <a class="nav-item" onclick="showScreen('loja-cadastro', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>
+        Dados da loja
+      </a>
+    </div>
+
+    <div class="nav-label">Sistema</div>
+    <a class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.36.16.66.42.87.74.21.32.32.7.32 1.09 0 .39-.11.77-.32 1.09-.21.32-.51.58-.87.74z"/></svg>
+      Configurações
+    </a>
+  </aside>
+
+  <div class="main">
+
+    <header class="topbar">
+      <button class="icon-btn menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="breadcrumb" id="breadcrumb">Estúdio da Costura · <strong>Visão geral</strong></div>
+      <div class="topbar-spacer"></div>
+      <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema">
+        <svg id="theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">R</div>
+        <span class="user-name" id="user-name">Rafael (Ateliê)</span>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ===== ATELIÊ: VISÃO GERAL ===== -->
+      <div id="screen-visao" class="screen">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title">Visão geral</h1>
+            <div class="page-sub">Julho · 2026 — atualizado há 40 segundos</div>
+          </div>
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <span class="live-dot">Agente ativo</span>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">OS abertas</div><div class="kpi-value">18</div><div class="kpi-delta">em 3 lojas</div></div>
+          <div class="kpi"><div class="kpi-label">Prontas hoje</div><div class="kpi-value">5</div><div class="kpi-delta up">↑ avisadas na hora</div></div>
+          <div class="kpi"><div class="kpi-label">Atrasadas</div><div class="kpi-value">2</div><div class="kpi-delta warn">passaram do prazo</div></div>
+          <div class="kpi"><div class="kpi-label">Lojas ativas</div><div class="kpi-value">3</div><div class="kpi-delta">Boss · Brooksfield · VR</div></div>
+          <div class="kpi"><div class="kpi-label">Prazo médio</div><div class="kpi-value">2,4<span style="font-size:14px">d</span></div><div class="kpi-delta">da entrada à entrega</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Ordens de serviço — por status</div>
+              <div class="card-sub">Recebido → Em andamento → Pronto → Entregue</div>
+            </div>
+            <a class="card-link" onclick="showScreen('os', document.querySelectorAll('#nav-atelie .nav-item')[1])">Ver todas →</a>
+          </div>
+          <div class="pipeline">
+            <div class="pipe-col">
+              <div class="pipe-head"><span class="name">Recebido</span><span class="count mono">4</span></div>
+              <div class="lead-card">
+                <div class="lead-name">Marcelo Andrade</div>
+                <div class="lead-meta">Calça · barra + cós</div>
+                <div class="lead-tags"><span class="tag tag-loja">Boss</span><span class="tag tag-vend">João</span></div>
+              </div>
+              <div class="lead-card">
+                <div class="lead-name">Fernanda Reis</div>
+                <div class="lead-meta">Vestido · ajuste cintura</div>
+                <div class="lead-tags"><span class="tag tag-loja">Brooksfield</span><span class="tag tag-vend">Patrícia</span></div>
+              </div>
+            </div>
+            <div class="pipe-col">
+              <div class="pipe-head"><span class="name">Em andamento</span><span class="count mono">7</span></div>
+              <div class="lead-card">
+                <div class="lead-name">Eduardo Lima</div>
+                <div class="lead-meta">Paletó · diminuir manga + ombro</div>
+                <div class="lead-tags"><span class="tag tag-loja">Boss</span><span class="tag tag-vend">Marcos</span></div>
+              </div>
+              <div class="lead-card">
+                <div class="lead-name">Igor Castro</div>
+                <div class="lead-meta">Camisa · punho + barra</div>
+                <div class="lead-tags"><span class="tag tag-loja">Boss</span><span class="tag tag-vend">João</span><span class="tag tag-atraso">atrasado</span></div>
+              </div>
+            </div>
+            <div class="pipe-col">
+              <div class="pipe-head"><span class="name">Pronto</span><span class="count mono">3</span></div>
+              <div class="lead-card">
+                <div class="lead-name">Marcelo Andrade</div>
+                <div class="lead-meta">Calça · pronta há 12 min</div>
+                <div class="lead-tags"><span class="tag tag-loja">Boss</span><span class="tag tag-vend">João</span></div>
+              </div>
+            </div>
+            <div class="pipe-col">
+              <div class="pipe-head"><span class="name">Entregue</span><span class="count mono">4</span></div>
+              <div class="lead-card">
+                <div class="lead-name">Bruna Salles</div>
+                <div class="lead-meta">Terno · ajuste completo</div>
+                <div class="lead-tags"><span class="tag tag-loja">Brooksfield</span><span class="tag tag-vend">Patrícia</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <div><div class="card-title">Conversas — WhatsApp do agente</div><div class="card-sub">Entrada e conclusão, com confirmação antes de gravar</div></div>
+            </div>
+            <div class="conv-list">
+              <div class="conv">
+                <div class="conv-avatar">RA</div>
+                <div class="conv-body">
+                  <div class="conv-name">Rafael (áudio) <span style="color:var(--ink-mute);font-weight:400">· 08:14</span></div>
+                  <div class="bubble">🎙️ "Chegou uma calça da Boss, cliente Marcelo Andrade, é pra fazer barra e ajustar o cós, entrega quinta"</div>
+                  <div class="bubble bot">Entendi: Loja Boss · cliente Marcelo Andrade · calça · barra + cós · entrega qui 17/07. Confirma?<div class="tick">✓✓ lido</div></div>
+                  <div class="bubble">"isso mesmo"</div>
+                  <div class="bubble bot">OS #118 registrada ✓<div class="tick">gravado no CRM</div></div>
+                </div>
+              </div>
+              <div class="conv">
+                <div class="conv-avatar">RA</div>
+                <div class="conv-body">
+                  <div class="conv-name">Rafael (texto) <span style="color:var(--ink-mute);font-weight:400">· agora</span></div>
+                  <div class="bubble">"terminei a calça do Marcelo, da Boss"</div>
+                  <div class="bubble bot">OS #118 marcada como PRONTA ✓ Avisei a Loja Boss agora.<div class="tick">enviado pra loja</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div><div class="card-title">Aviso automático — Loja Boss</div><div class="card-sub">Disparado no instante em que ficou pronto</div></div>
+            </div>
+            <div class="conv-list">
+              <div class="conv">
+                <div class="conv-avatar">B</div>
+                <div class="conv-body">
+                  <div class="conv-name">Loja Boss <span style="color:var(--ink-mute);font-weight:400">· agora</span></div>
+                  <div class="bubble bot">👖 A calça do cliente <strong>Marcelo Andrade</strong> já está pronta! (OS #118 · vendedor João)<div class="tick">entregue ✓✓</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ATELIÊ: ORDENS DE SERVIÇO ===== -->
+      <div id="screen-os" class="screen" style="display:none">
+        <div class="page-head">
+          <div><h1 class="page-title">Ordens de serviço</h1><div class="page-sub">18 em aberto · todas as lojas</div></div>
+        </div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>OS</th><th>Loja</th><th>Vendedor</th><th>Cliente</th><th>Peça / serviço</th><th>Prazo</th><th>Status</th><th></th></tr></thead>
+            <tbody id="tabela-os">
+              <tr data-loja="Boss"><td class="mono">#118</td><td>Boss</td><td>João</td><td><strong>Marcelo Andrade</strong></td><td>Calça · barra + cós</td><td class="mono">17/07</td><td class="col-status"><span class="status-badge st-pronto">Pronto</span></td><td></td></tr>
+              <tr data-loja="Boss"><td class="mono">#117</td><td>Boss</td><td>Marcos</td><td><strong>Eduardo Lima</strong></td><td>Paletó · manga + ombro</td><td class="mono">18/07</td><td class="col-status"><span class="status-badge st-andamento">Em andamento</span></td><td><button class="btn btn-marcar-pronto" onclick="marcarComoPronto(this)">✓ Marcar pronto</button></td></tr>
+              <tr data-loja="Boss"><td class="mono">#116</td><td>Boss</td><td>João</td><td><strong>Igor Castro</strong></td><td>Camisa · punho + barra</td><td><span class="days-badge">atrasado 1d</span></td><td class="col-status"><span class="status-badge st-andamento">Em andamento</span></td><td><button class="btn btn-marcar-pronto" onclick="marcarComoPronto(this)">✓ Marcar pronto</button></td></tr>
+              <tr data-loja="Brooksfield"><td class="mono">#115</td><td>Brooksfield</td><td>Patrícia</td><td><strong>Fernanda Reis</strong></td><td>Vestido · ajuste cintura</td><td class="mono">19/07</td><td class="col-status"><span class="status-badge st-recebido">Recebido</span></td><td><button class="btn btn-marcar-pronto" onclick="marcarComoPronto(this)">✓ Marcar pronto</button></td></tr>
+              <tr data-loja="Brooksfield"><td class="mono">#114</td><td>Brooksfield</td><td>Patrícia</td><td><strong>Bruna Salles</strong></td><td>Terno · ajuste completo</td><td class="mono">15/07</td><td class="col-status"><span class="status-badge st-entregue">Entregue</span></td><td></td></tr>
+              <tr data-loja="Boss"><td class="mono">#113</td><td>Boss</td><td>Vanessa</td><td><strong>Rodrigo Nunes</strong></td><td>Colete · ajuste lateral</td><td class="mono">16/07</td><td class="col-status"><span class="status-badge st-andamento">Em andamento</span></td><td><button class="btn btn-marcar-pronto" onclick="marcarComoPronto(this)">✓ Marcar pronto</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="toast-pronto" class="toast"></div>
+      </div>
+
+      <!-- ===== ATELIÊ: CONVERSAS ===== -->
+      <div id="screen-conversas" class="screen" style="display:none">
+        <div class="page-head"><div><h1 class="page-title">Conversas</h1><div class="page-sub">WhatsApp do agente · entrada e conclusão</div></div></div>
+        <div class="card">
+          <div class="conv-list">
+            <div class="conv">
+              <div class="conv-avatar">RA</div>
+              <div class="conv-body">
+                <div class="conv-name">Rafael <span style="color:var(--ink-mute);font-weight:400">· hoje 08:14</span></div>
+                <div class="bubble">🎙️ Áudio: nota da Brooksfield, cliente Fernanda Reis, vestido, ajustar cintura, entrega sexta</div>
+                <div class="bubble bot">Loja Brooksfield · Fernanda Reis · vestido · ajuste de cintura · entrega sex 19/07. Confirma?</div>
+                <div class="bubble">sim</div>
+                <div class="bubble bot">OS #115 registrada ✓</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ATELIÊ: LOJAS & VENDEDORES ===== -->
+      <div id="screen-lojas" class="screen" style="display:none">
+        <div class="page-head">
+          <div><h1 class="page-title">Lojas & Vendedores</h1><div class="page-sub">Cada loja tem login próprio e cadastra os próprios dados</div></div>
+          <div class="page-actions"><button class="btn btn-primary">+ Convidar loja</button></div>
+        </div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>Loja</th><th>Endereço / Shopping</th><th>Gerentes</th><th>Vendedores</th><th>Acesso</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Boss</strong></td><td>Shopping Pátio Higienópolis · Av. Higienópolis, 618, loja 4024</td><td>Camila Souza, Diego Prado</td><td>João, Marcos, Vanessa</td><td><span class="status-badge st-pronto">Ativo</span></td></tr>
+              <tr><td><strong>Brooksfield</strong></td><td>Shopping Ibirapuera · Av. Ibirapuera, 3103, lojas 153</td><td>Renata Alves</td><td>Patrícia, Lucas, Beatriz, Otávio</td><td><span class="status-badge st-pronto">Ativo</span></td></tr>
+              <tr><td><strong>VR Collezioni</strong></td><td>MorumbiShopping · Av. Roque Petroni Júnior, 1089</td><td>Fábio Nogueira, Simone Prado, Aline Costa</td><td>Ricardo</td><td><span class="status-badge st-pronto">Ativo</span></td></tr>
+              <tr><td style="color:var(--ink-mute)">+ nova loja</td><td colspan="3" style="color:var(--ink-mute)">convite pendente de envio</td><td><span class="status-badge st-recebido">Convidar</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== ATELIÊ: CATÁLOGO ===== -->
+      <div id="screen-catalogo" class="screen" style="display:none">
+        <div class="page-head"><div><h1 class="page-title">Catálogo & Preços</h1><div class="page-sub">Serviços por peça — usado pra IA reconhecer o pedido e sugerir prazo</div></div></div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>Peça</th><th>Serviço</th><th>Preço médio</th><th>Prazo padrão</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Calça</strong></td><td>Barra</td><td class="mono">R$ 25</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Calça</strong></td><td>Ajuste de cintura (apertar/alargar)</td><td class="mono">R$ 30</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Calça</strong></td><td>Cós</td><td class="mono">R$ 35</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Calça</strong></td><td>Ajuste de perna (afunilar)</td><td class="mono">R$ 40</td><td class="mono">3 dias</td></tr>
+              <tr><td><strong>Camisa</strong></td><td>Diminuir manga</td><td class="mono">R$ 30</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Camisa</strong></td><td>Ajuste de punho</td><td class="mono">R$ 25</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Camisa</strong></td><td>Ajuste lateral / cintura</td><td class="mono">R$ 35</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Camisa</strong></td><td>Barra</td><td class="mono">R$ 20</td><td class="mono">1 dia</td></tr>
+              <tr><td><strong>Paletó / Terno</strong></td><td>Diminuir manga</td><td class="mono">R$ 45</td><td class="mono">3 dias</td></tr>
+              <tr><td><strong>Paletó / Terno</strong></td><td>Ajuste de ombro</td><td class="mono">R$ 60</td><td class="mono">4 dias</td></tr>
+              <tr><td><strong>Paletó / Terno</strong></td><td>Ajuste de cintura / lateral</td><td class="mono">R$ 50</td><td class="mono">3 dias</td></tr>
+              <tr><td><strong>Paletó / Terno</strong></td><td>Comprimento geral</td><td class="mono">R$ 55</td><td class="mono">3 dias</td></tr>
+              <tr><td><strong>Colete</strong></td><td>Ajuste lateral</td><td class="mono">R$ 30</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Saia / Vestido</strong></td><td>Ajuste de cintura</td><td class="mono">R$ 35</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Saia / Vestido</strong></td><td>Barra</td><td class="mono">R$ 25</td><td class="mono">2 dias</td></tr>
+              <tr><td><strong>Geral</strong></td><td>Troca de zíper</td><td class="mono">R$ 30</td><td class="mono">2 dias</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== LOJA: MINHAS PEÇAS ===== -->
+      <div id="screen-loja-os" class="screen" style="display:none">
+        <div class="lojista-banner">
+          🔒 Você está vendo só as peças da <strong id="banner-loja-nome">Loja Boss</strong>. As outras lojas não aparecem aqui.
+        </div>
+        <div class="page-head">
+          <div><h1 class="page-title">Minhas peças</h1><div class="page-sub" id="subtitulo-loja-os">Loja Boss · 6 ordens em aberto</div></div>
+        </div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>OS</th><th>Vendedor</th><th>Cliente</th><th>Peça / serviço</th><th>Prazo</th><th>Status</th></tr></thead>
+            <tbody id="tabela-loja-os"></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Alguém ligou perguntando?</div><div class="card-sub">Busque pelo nome do cliente pra confirmar na hora</div></div></div>
+          <div class="form-grid full"><div class="field"><label>Nome do cliente</label><input placeholder="Ex.: Marcelo Andrade"></div></div>
+        </div>
+      </div>
+
+      <!-- ===== LOJA: DADOS DA LOJA (self-cadastro) ===== -->
+      <div id="screen-loja-cadastro" class="screen" style="display:none">
+        <div class="lojista-banner">✏️ Esses dados são preenchidos por vocês — o ateliê não precisa digitar nada disso.</div>
+        <div class="page-head"><div><h1 class="page-title">Dados da loja</h1><div class="page-sub" id="subtitulo-loja-cadastro">Loja Boss</div></div></div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Identificação</div></div>
+          <div class="form-grid">
+            <div class="field"><label>Nome da loja</label><input id="campo-nome-loja" value="Boss"></div>
+            <div class="field"><label>Endereço / Shopping</label><input id="campo-endereco-loja" value="Shopping Pátio Higienópolis · Av. Higienópolis, 618, loja 4024"></div>
+            <div class="field"><label>Telefone da loja</label><input id="campo-telefone-loja" value="(11) 4002-8922"></div>
+            <div class="field"><label>WhatsApp de aviso</label><input id="campo-whatsapp-loja" value="(11) 98888-0001"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Gerentes</div><a class="card-link" onclick="adicionarPessoa('gerentes-lista','Gerente')">+ Adicionar</a></div>
+          <div class="form-grid" id="gerentes-lista">
+            <div class="field"><label>Gerente 1</label><input value="Camila Souza"></div>
+            <div class="field"><label>Gerente 2</label><input value="Diego Prado"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Vendedores</div><a class="card-link" onclick="adicionarPessoa('vendedores-lista','Vendedor')">+ Adicionar</a></div>
+          <div class="form-grid" id="vendedores-lista">
+            <div class="field"><label>Vendedor 1</label><input value="João"></div>
+            <div class="field"><label>Vendedor 2</label><input value="Marcos"></div>
+            <div class="field"><label>Vendedor 3</label><input value="Vanessa"></div>
+          </div>
+        </div>
+        <div class="card-sub" style="padding:0 18px 14px;color:var(--ink-mute)">Não tem limite de gerentes nem vendedores — cada loja cadastra quantos precisar.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentRole = 'atelie';
+
+  function showScreen(id, navEl) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+    const target = document.getElementById('screen-' + id);
+    if (target) target.style.display = 'block';
+    const navGroup = navEl ? navEl.closest('#nav-atelie, #nav-loja') : null;
+    if (navGroup) navGroup.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if (navEl) navEl.classList.add('active');
+    const titles = {
+      'visao': 'Visão geral', 'os': 'Ordens de serviço', 'conversas': 'Conversas',
+      'lojas': 'Lojas & Vendedores', 'catalogo': 'Catálogo & Preços',
+      'loja-os': 'Minhas peças', 'loja-cadastro': 'Dados da loja'
+    };
+    const prefix = currentRole === 'loja' ? 'Loja Boss' : 'Estúdio da Costura';
+    document.getElementById('breadcrumb').innerHTML = prefix + ' · <strong>' + (titles[id] || '') + '</strong>';
+    if (window.innerWidth <= 760) toggleSidebar(false);
+  }
+
+  function mostrarToast(msg) {
+    const t = document.getElementById('toast-pronto');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+  }
+
+  function marcarComoPronto(btn) {
+    const row = btn.closest('tr');
+    const loja = row.dataset.loja || 'loja';
+    const cliente = row.querySelector('td:nth-child(4) strong')?.textContent || 'cliente';
+    const os = row.querySelector('td.mono')?.textContent || '';
+    const statusCell = row.querySelector('.col-status');
+    statusCell.innerHTML = '<span class="status-badge st-pronto">Pronto</span>';
+    btn.remove();
+    mostrarToast('✓ ' + os + ' marcada como pronta manualmente. WhatsApp enviado à ' + loja + ' avisando que a peça de ' + cliente + ' está pronta.');
+  }
+
+  const LOJAS_DATA = {
+    'Boss': {
+      nome: 'Boss', endereco: 'Shopping Pátio Higienópolis · Av. Higienópolis, 618, loja 4024',
+      telefone: '(11) 4002-8922', whatsapp: '(11) 98888-0001',
+      gerentes: ['Camila Souza', 'Diego Prado'],
+      vendedores: ['João', 'Marcos', 'Vanessa'],
+      os: [
+        {os:'#118', vendedor:'João', cliente:'Marcelo Andrade', servico:'Calça · barra + cós', prazo:'17/07', status:'pronto'},
+        {os:'#117', vendedor:'Marcos', cliente:'Eduardo Lima', servico:'Paletó · manga + ombro', prazo:'18/07', status:'andamento'},
+        {os:'#116', vendedor:'João', cliente:'Igor Castro', servico:'Camisa · punho + barra', prazo:'atrasado 1d', status:'andamento'},
+        {os:'#113', vendedor:'Vanessa', cliente:'Rodrigo Nunes', servico:'Colete · ajuste lateral', prazo:'16/07', status:'andamento'}
+      ]
+    },
+    'Brooksfield': {
+      nome: 'Brooksfield', endereco: 'Shopping Ibirapuera · Av. Ibirapuera, 3103, lojas 153',
+      telefone: '(11) 5051-0212', whatsapp: '(11) 98888-0002',
+      gerentes: ['Renata Alves'],
+      vendedores: ['Patrícia', 'Lucas', 'Beatriz', 'Otávio'],
+      os: [
+        {os:'#115', vendedor:'Patrícia', cliente:'Fernanda Reis', servico:'Vestido · ajuste cintura', prazo:'19/07', status:'recebido'},
+        {os:'#114', vendedor:'Patrícia', cliente:'Bruna Salles', servico:'Terno · ajuste completo', prazo:'15/07', status:'entregue'},
+        {os:'#119', vendedor:'Lucas', cliente:'Henrique Dias', servico:'Paletó · ajuste de ombro', prazo:'20/07', status:'andamento'}
+      ]
+    },
+    'VR': {
+      nome: 'VR Collezioni', endereco: 'MorumbiShopping · Av. Roque Petroni Júnior, 1089, Jardim das Acácias',
+      telefone: '(11) 5181-4033', whatsapp: '(11) 98888-0003',
+      gerentes: ['Fábio Nogueira', 'Simone Prado', 'Aline Costa'],
+      vendedores: ['Ricardo'],
+      os: [
+        {os:'#120', vendedor:'Ricardo', cliente:'Gustavo Pires', servico:'Terno · ajuste de lapela', prazo:'21/07', status:'recebido'},
+        {os:'#121', vendedor:'Ricardo', cliente:'André Bittencourt', servico:'Calça · cós', prazo:'22/07', status:'andamento'}
+      ]
+    }
+  };
+
+  const STATUS_LABEL = { recebido: 'Recebido', andamento: 'Em andamento', pronto: 'Pronto', entregue: 'Entregue' };
+
+  function renderLoja(chave) {
+    const d = LOJAS_DATA[chave];
+    if (!d) return;
+
+    document.getElementById('banner-loja-nome').textContent = 'Loja ' + d.nome;
+    document.getElementById('subtitulo-loja-os').textContent = d.nome + ' · ' + d.os.length + ' ordens em aberto';
+    document.getElementById('subtitulo-loja-cadastro').textContent = 'Loja ' + d.nome;
+    document.getElementById('badge-loja-os').textContent = d.os.length;
+
+    const tbody = document.getElementById('tabela-loja-os');
+    tbody.innerHTML = d.os.map(o => {
+      const prazoCel = o.prazo.includes('atrasado') ? '<span class="days-badge">' + o.prazo + '</span>' : '<td class="mono">' + o.prazo + '</td>';
+      const prazoHtml = o.prazo.includes('atrasado') ? '<td>' + prazoCel + '</td>' : prazoCel;
+      return '<tr><td class="mono">' + o.os + '</td><td>' + o.vendedor + '</td><td><strong>' + o.cliente + '</strong></td><td>' + o.servico + '</td>' + prazoHtml + '<td><span class="status-badge st-' + o.status + '">' + STATUS_LABEL[o.status] + '</span></td></tr>';
+    }).join('');
+
+    document.getElementById('campo-nome-loja').value = d.nome;
+    document.getElementById('campo-endereco-loja').value = d.endereco;
+    document.getElementById('campo-telefone-loja').value = d.telefone;
+    document.getElementById('campo-whatsapp-loja').value = d.whatsapp;
+
+    const gerentesLista = document.getElementById('gerentes-lista');
+    gerentesLista.innerHTML = d.gerentes.map(g => campoPessoa('Gerente', g)).join('');
+
+    const vendedoresLista = document.getElementById('vendedores-lista');
+    vendedoresLista.innerHTML = d.vendedores.map(v => campoPessoa('Vendedor', v)).join('');
+  }
+
+  function campoPessoa(rotulo, valor) {
+    return '<div class="field"><label>' + rotulo + '</label><div class="field-row"><input value="' + valor + '"><button type="button" class="btn-remove-pessoa" onclick="removerPessoa(this)" title="Remover ' + rotulo.toLowerCase() + '">×</button></div></div>';
+  }
+
+  function removerPessoa(btn) {
+    const campo = btn.closest('.field');
+    const lista = campo.parentElement;
+    if (lista.children.length <= 1) {
+      mostrarToast('Precisa ficar pelo menos 1 nome nessa lista.');
+      return;
+    }
+    campo.remove();
+  }
+
+  function trocarLoja(chave) {
+    renderLoja(chave);
+    const d = LOJAS_DATA[chave];
+    document.getElementById('user-avatar').textContent = d.nome[0];
+    document.getElementById('user-name').textContent = d.nome + ' (Loja)';
+  }
+
+  function adicionarPessoa(listaId, rotulo) {
+    const lista = document.getElementById(listaId);
+    const div = document.createElement('div');
+    div.className = 'field';
+    div.innerHTML = '<label>' + rotulo + '</label><div class="field-row"><input placeholder="Nome"><button type="button" class="btn-remove-pessoa" onclick="removerPessoa(this)" title="Remover ' + rotulo.toLowerCase() + '">×</button></div>';
+    lista.appendChild(div);
+    div.querySelector('input').focus();
+  }
+
+  function setRole(role) {
+    currentRole = role;
+    document.getElementById('btn-role-atelie').classList.toggle('active', role === 'atelie');
+    document.getElementById('btn-role-loja').classList.toggle('active', role === 'loja');
+    document.getElementById('nav-atelie').style.display = role === 'atelie' ? 'block' : 'none';
+    document.getElementById('nav-loja').style.display = role === 'loja' ? 'block' : 'none';
+    if (role === 'atelie') {
+      document.getElementById('user-avatar').textContent = 'R';
+      document.getElementById('user-name').textContent = 'Rafael (Ateliê)';
+      showScreen('visao', document.querySelector('#nav-atelie .nav-item'));
+    } else {
+      document.getElementById('loja-picker').value = 'Boss';
+      trocarLoja('Boss');
+      showScreen('loja-os', document.querySelector('#nav-loja .nav-item'));
+    }
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    const icon = document.getElementById('theme-icon');
+    if (next === 'light') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+    try { localStorage.setItem('oaken-theme', next); } catch(e) {}
+  }
+  function toggleSidebar(force) {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('overlay');
+    const open = force !== undefined ? force : !sb.classList.contains('open');
+    sb.classList.toggle('open', open);
+    ov.classList.toggle('show', open);
+  }
+  try {
+    const saved = localStorage.getItem('oaken-theme');
+    if (saved === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+      const icon = document.getElementById('theme-icon');
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    }
+  } catch(e) {}
+
+  // pré-carrega os dados da loja Boss desde o boot, pra nunca aparecer vazio
+  // (mesmo antes do usuário clicar em "Loja" pela primeira vez)
+  renderLoja('Boss');
+</script>
+
+</body>
+</html>
